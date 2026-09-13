@@ -1,0 +1,122 @@
+[
+  {
+    "torch_id": "TORCH-70-LANGUAGES",
+    "title": "70 target languages",
+    "state": "BANKED",
+    "why_red": "Resolve which language/nation members move across 70/72 witnesses and what moves with them.",
+    "return_trigger": "Any new 70/72, language, nation, Babel, court, translator, or genealogy evidence.",
+    "any_terms": ["70 languages", "seventy languages", "72 languages", "seventy-two languages", "babel", "interpreter", "translator"],
+    "all_terms": [],
+    "min_hits": 1
+  },
+  {
+    "torch_id": "TORCH-SORCERY-TARGETS",
+    "title": "Sorcery targets and operators",
+    "state": "BANKED",
+    "why_red": "Classify what is acted upon and by which operators; compare later angel/demon/decan functional grids.",
+    "return_trigger": "Any sorcery, magic, binding, invocation, healing, divination, weather, disease, name, spirit, speech, or boundary evidence.",
+    "any_terms": ["sorcery", "magic", "bind", "binding", "invoke", "invocation", "divination", "spell", "conjuration", "spirit", "weather", "disease"],
+    "all_terms": [],
+    "min_hits": 1
+  },
+  {
+    "torch_id": "TORCH-JUDAH",
+    "title": "House of Judah / Aristeas fourth group",
+    "state": "BANKED",
+    "why_red": "Protected bright-red thread: fourth-group 5/6 damage and divergent repair may alter the larger transmission architecture.",
+    "return_trigger": "New Judah, fourth tribe/group, Aristeas, Zechariah, Hilkiah/Chelkias, Chabrias, Jesus lineage, or 5/6 evidence.",
+    "any_terms": ["judah", "fourth tribe", "fourth group", "aristeas", "zechariah", "hilkiah", "chelkias", "chabrias", "5/6", "five of six"],
+    "all_terms": [],
+    "min_hits": 1
+  },
+  {
+    "torch_id": "TORCH-36",
+    "title": "36 cells / pairs / nomes / decans",
+    "state": "BANKED",
+    "why_red": "Trace actual transmission and distinguish 72/2 topology from historical dependence.",
+    "return_trigger": "New 36, paired translator, cell, nome, decan, 72/2, or 35/36 evidence.",
+    "any_terms": ["36", "thirty-six", "35", "thirty-five", "decan", "nome", "cell", "pair"],
+    "all_terms": [],
+    "min_hits": 2
+  },
+  {
+    "torch_id": "TORCH-MOSES-HERMES",
+    "title": "Moses–Hermes interpretation layer",
+    "state": "BANKED",
+    "why_red": "Test whether Moses/Hermes marks a mediation/interpretation layer without presuming intention or corruption.",
+    "return_trigger": "New Moses + Hermes, Artapanus, hermeneia, sacred-writing, hieroglyphic, Orpheus, or interpretation evidence.",
+    "any_terms": ["moses", "hermes", "artapanus", "hermeneia", "hieroglyph", "sacred letters", "sacred writing", "orpheus"],
+    "all_terms": [],
+    "min_hits": 2
+  },
+  {
+    "torch_id": "TORCH-ANGEL-FUNCTION",
+    "title": "Angel as entity vs messenger/function",
+    "state": "BANKED",
+    "why_red": "Determine when apparent entity classes are actually action/function roles such as messenger or emissary.",
+    "return_trigger": "New angel, messenger, emissary, apostle, announce, agent, demon, decan, or functional-grid evidence.",
+    "any_terms": ["angel", "messenger", "emissary", "apostle", "announce", "agent", "demon", "decan"],
+    "all_terms": [],
+    "min_hits": 1
+  },
+  {
+    "torch_id": "TORCH-SETH-VALENTINUS",
+    "title": "Seth ↔ Valentinus complementary projections",
+    "state": "BANKED",
+    "why_red": "Test whether each preserves a projection of a larger state space rather than treating one as simply wrong.",
+    "return_trigger": "New Sethian, Valentinian, Horos, Stauros, boundary, ascent/descent, or projection evidence.",
+    "any_terms": ["sethian", "seth", "valentinian", "valentinus", "horos", "stauros", "ascent", "descent"],
+    "all_terms": [],
+    "min_hits": 1
+  },
+  {
+    "torch_id": "TORCH-MUSIC",
+    "title": "Music / harmony reintegration",
+    "state": "BANKED",
+    "why_red": "Sound, phoneme, and letters must eventually reconnect to ratio, interval, pitch, inversion, and closure.",
+    "return_trigger": "New ratio, pitch, semitone, comma, interval, harmony, Kepler, Fludd, monochord, or 80:81 evidence.",
+    "any_terms": ["kepler", "fludd", "semitone", "80:81", "80/81", "harmony", "interval", "pitch", "monochord", "comma"],
+    "all_terms": [],
+    "min_hits": 1
+  },
+  {
+    "torch_id": "TORCH-GNOSTIC",
+    "title": "Gnostic transit operators",
+    "state": "BANKED",
+    "why_red": "Reconnect boundary, differentiation, traversal, return, and repeated-transit discoveries to the Rosetta decoder problem.",
+    "return_trigger": "New Sophia, Shem, Sethian, Valentinian, Pronoia, Horos, Pleroma, boundary, return, or traversal evidence.",
+    "any_terms": ["sophia", "shem", "pronoia", "horos", "pleroma", "valentinian", "sethian", "traversal", "return"],
+    "all_terms": [],
+    "min_hits": 1
+  },
+  {
+    "torch_id": "TORCH-GOG-MAGOG",
+    "title": "Gog/Magog translation and terminal-boundary stack",
+    "state": "BURNING",
+    "why_red": "Complete Jewish/Islamic/Persian/Christian variants through the same decoder pipeline.",
+    "return_trigger": "Any Gog/Magog, years/two, hill/grave, understand/be-understood, barrier, terminal-state, or pronunciation evidence.",
+    "any_terms": ["gog", "magog", "ya'juj", "yajuj", "majuj", "years", "two prophets", "barrier", "grave", "elevation"],
+    "all_terms": [],
+    "min_hits": 1
+  },
+  {
+    "torch_id": "TORCH-QUAIL-SALWA",
+    "title": "Quail / salwa object-state-vector stack",
+    "state": "BURNING",
+    "why_red": "Keep event, utterance, decoder, object/state, and rise/descend vectors separate while tracing cross-language history.",
+    "return_trigger": "Any quail, salwa, consolation, manna, craving, rise, descend, or Numbers 11 evidence.",
+    "any_terms": ["quail", "salwa", "salwā", "consolation", "manna", "craving", "rise", "descend", "numbers 11"],
+    "all_terms": [],
+    "min_hits": 1
+  },
+  {
+    "torch_id": "TORCH-ROSETTA-6X12",
+    "title": "6×12 correspondence architecture",
+    "state": "BURNING",
+    "why_red": "Discover rather than impose the six transferable classes; equal arithmetic must not collapse distinct operators.",
+    "return_trigger": "Any 6×12, 12×6, 72, six classes, twelve sectors/tribes/directions, or paired refinement evidence.",
+    "any_terms": ["6x12", "6×12", "12x6", "12×6", "72", "seventy-two", "six classes", "twelve tribes"],
+    "all_terms": [],
+    "min_hits": 1
+  }
+]

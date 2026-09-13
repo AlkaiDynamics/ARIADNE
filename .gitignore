@@ -1,0 +1,21 @@
+# ARIADNE runtime state
+/db/*.sqlite
+/db/*.sqlite-*
+/custody/*
+!/custody/.gitkeep
+/artifacts/*
+!/artifacts/.gitkeep
+/inbox/*
+!/inbox/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
