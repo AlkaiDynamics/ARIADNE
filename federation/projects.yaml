@@ -1,7 +1,19 @@
 federation_id: GREAT-WORK
+
+registry_policy:
+  completeness: OPEN_WORLD
+  rule: "Inventory first; classify only when the handling decision is actually made."
+  unresolved_is_allowed: true
+  current_n_is_not_total_n: true
+  repository_identity_does_not_define_project_identity: true
+  git_branch_identity_does_not_define_project_identity: true
+  project_fork_identity_is_separate: true
+
 projects:
   - project_id: AYLI
     role: EVIDENCE_ATLAS
+    status: REGISTERED
+    repository: AlkaiDynamics/AYLI
     owns:
       - witnesses
       - variants
@@ -12,6 +24,7 @@ projects:
 
   - project_id: SUN
     role: THEORY_MODEL_LINEAGE
+    status: REGISTERED
     owns:
       - equations
       - operator definitions
@@ -23,6 +36,7 @@ projects:
 
   - project_id: SATURN
     role: APPLICATION_FORK
+    status: REGISTERED
     consumes:
       - pinned SUN snapshot
     owns:
@@ -33,19 +47,162 @@ projects:
     hard_rule: SATURN_SUCCESS_DOES_NOT_VALIDATE_SUN
 
   - project_id: SOPHIA
-    role: PROJECT_WORKSPACE
-    status: REGISTERED_UNSPECIFIED
+    role: UNRESOLVED
+    status: CLASSIFICATION_PENDING
+    notes:
+      - "Currently functions as a human-values/authority boundary in SATURN framing."
+      - "Do not decide yet whether Sophia is a project, subsystem, policy layer, or named role."
 
-  - project_id: ARGO_LIFELINE
-    role: OPERATIONAL_SYSTEM
-    status: REGISTERED_UNSPECIFIED
+  - project_id: ARGO
+    aliases: [ARGO_LIFELINE, Lifeline]
+    role: UNRESOLVED
+    status: CLASSIFICATION_PENDING
+    notes:
+      - "Operational target/system lineage."
+      - "Must remain distinct from MARC-1 until their relationship is explicitly decided."
 
   - project_id: HARMONIA_OCCULTA
     role: HISTORICAL_HARMONIC_RESEARCH
     status: REGISTERED
+    repository: AlkaiDynamics/Harmonia-Occulta
 
   - project_id: ROSETTAS
+    name: R.O.S.E.T.T.A.S.
     role: RECONSTRUCTION_RESEARCH
     status: REGISTERED
+    repository: AlkaiDynamics/R.O.S.E.T.T.A.S.
+
+  - project_id: TEMPO_GOLD
+    role: TEMPORAL_AUDIT_RESEARCH
+    status: REGISTERED_UNSPECIFIED
+    repository: AlkaiDynamics/Tempo-Gold
+
+  - project_id: BURGAMOTS
+    role: PHYSICAL_COSMOLOGICAL_DYNAMICS
+    status: REGISTERED_UNSPECIFIED
+    repository: AlkaiDynamics/BURGAMOTS
+
+unresolved_major_branches:
+  - project_id: BEANS
+    name: Beginning to End Architectural Navigation System
+    status: CLASSIFICATION_PENDING
+    repository: null
+    notes:
+      - "Seed/cascade architecture program."
+      - "Do not force into project, fork, subsystem, or methodology class yet."
+
+  - project_id: MARC_1
+    aliases: [M1, MARC-1]
+    status: CLASSIFICATION_PENDING
+    repository: AlkaiDynamics/MARC-1
+    notes:
+      - "Historically framed as the builder/seed that builds ARGO rather than being part of ARGO."
+      - "Federation handling remains undecided."
+
+  - project_id: SHARER
+    aliases: [The-SHARER, SHARERDOUX, AutoSHARE]
+    status: CLASSIFICATION_PENDING
+    repositories:
+      - AlkaiDynamics/The-SHARER
+      - AlkaiDynamics/SHARERDOUX
+      - AlkaiDynamics/AutoSHARE
+    notes:
+      - "Historical core ecosystem line; relationship among repository generations remains unresolved."
+
+  - project_id: MORPHIQ
+    status: CLASSIFICATION_PENDING
+    repository: AlkaiDynamics/MorphIQ
+
+  - project_id: QUESTN
+    aliases: [Quest10, Q10]
+    status: CLASSIFICATION_PENDING
+    repository: AlkaiDynamics/QuestN
+    notes:
+      - "Q10 may be a protocol/interaction layer rather than a separate project."
+
+  - project_id: HQ_NEURITE
+    aliases: [HQ, Neurite-remake]
+    status: CLASSIFICATION_PENDING
+    repository: AlkaiDynamics/HQ
+    notes:
+      - "Neurite-native control-plane/UI/kernel line; exact federation role remains open."
+
+  - project_id: MCDUCK
+    aliases: [McDuck MoneyBin, McDuck-Industries]
+    status: CLASSIFICATION_PENDING
+    repositories:
+      - AlkaiDynamics/McDuck
+      - AlkaiDynamics/McDuck-Industries
+
+  - project_id: WAUSAUKEE
+    aliases: [Wausauk33]
+    status: CLASSIFICATION_PENDING
+    repository: AlkaiDynamics/WAUSAUKEE_Dev_Docs
+
+  - project_id: AINGELS
+    aliases: [Omni-agents, AiNGELS]
+    status: CLASSIFICATION_PENDING
+    repository: null
+
+  - project_id: CHIP
+    status: CLASSIFICATION_PENDING
+    repository: null
+
+  - project_id: RRC
+    status: CLASSIFICATION_PENDING
+    repository: null
+
+  - project_id: EMPEDOCLES
+    status: CLASSIFICATION_PENDING
+    repository: null
+    notes:
+      - "Ethical/oversight role or system; do not assume independent-project status."
+
+  - project_id: MIDAS_RAW
+    status: CLASSIFICATION_PENDING
+    repository: null
+    notes:
+      - "Aggressive strategy-manager role/system; do not assume independent-project status."
+
+repository_candidates_pending_federation_decision:
+  - AlkaiDynamics/McRIB
+  - AlkaiDynamics/Ptolemy
+  - AlkaiDynamics/STRABO
+  - AlkaiDynamics/Substrate-Mechanics
+  - AlkaiDynamics/ACE_Framework
+  - AlkaiDynamics/The-Doves
+  - AlkaiDynamics/File_Atlas
+  - AlkaiDynamics/repolens
+  - AlkaiDynamics/Distinctive
+  - AlkaiDynamics/The-Glutenberg-Bible
+  - AlkaiDynamics/Glutenberg-Bible
+  - AlkaiDynamics/The-Tale-of-The-Golden-Goose
+  - AlkaiDynamics/JoliVerse
+  - AlkaiDynamics/P-li
+  - AlkaiDynamics/4Score
+  - AlkaiDynamics/ARTTOO
+  - AlkaiDynamics/ARTOO-VTo
+  - AlkaiDynamics/artoo-ink-visions
+  - AlkaiDynamics/th.ink-tattoo-visualization
+  - AlkaiDynamics/th-ink-vercel
+  - AlkaiDynamics/Flasc-Cache
+  - AlkaiDynamics/Flasc_cache
+  - AlkaiDynamics/mergr1
+  - AlkaiDynamics/mergr_2
+  - AlkaiDynamics/behold
+  - AlkaiDynamics/mmm
+  - AlkaiDynamics/doughmain
+  - AlkaiDynamics/precedent
+  - AlkaiDynamics/docs
+  - AlkaiDynamics/four-score-fitness
+  - AlkaiDynamics/sveltekit-boilerplate
+  - AlkaiDynamics/astrosmoke
 
 fork_identity_rule: PROJECT_FORKS_ARE_NOT_GIT_FORKS_OR_BRANCHES
+
+registry_invariants:
+  - "UNRESOLVED does not mean low-value, obsolete, excluded, or subordinate."
+  - "One project may span multiple repositories; one repository may host multiple project artifacts."
+  - "Aliases and historical names are preserved rather than normalized away."
+  - "No unresolved branch receives a parent/child relationship until that relationship is explicitly decided."
+  - "Discovery of a new line creates an inventory record before classification."
