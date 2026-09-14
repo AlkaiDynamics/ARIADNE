@@ -1,0 +1,53 @@
+project_id: SUN
+name: SUN
+kind: FROZEN_SCIENTIFIC_BASELINE
+status: FROZEN_WORKING_BASELINE
+
+zones:
+  CORE:
+    purpose: frozen mathematical and formal kernel
+    mutable: false
+  HISTORICAL_CONTROL:
+    purpose: Fludd/Kepler/Completed Harmony/TOL historical and functional control layer
+    mutable: false
+  TEST:
+    purpose: preregistered comparative, withheld-detail, ablation, and natural-system tests
+    mutable: true
+  EXTENSION:
+    purpose: candidate amendments and alternative formulations not yet promoted into CORE
+    mutable: true
+
+frozen_core:
+  ordinary_generation:
+    R: "2/3"
+    L: "3/4"
+    closure: "1/2"
+  terminal_boundary:
+    object: B_FK
+    representation: "(Q_FK, r, delta, Phi)"
+    out_edge: "(16/15, 0)"
+    return_edge: "(15/16, 1)"
+    path: "F/8 -> 2F/15 -> F/16"
+
+historical_control:
+  preserve_fludd_kepler_completed_harmony_tol_link: true
+  rule: "Operator/Rosetta work may be compared against this layer but may not silently modify it."
+
+comparative_protocol:
+  sequence:
+    - align_units
+    - stabilize_relational_classes
+    - freeze_mappings
+    - predict_withheld_substructure
+    - score_against_baselines
+    - test_natural_systems
+
+imports:
+  allowed: true
+  rule: "Imported results retain original provenance, assumptions, epistemic zone, and residuals."
+
+must_not:
+  - accept automatic amendments from SATURN
+  - change frozen mappings after withheld evidence is revealed
+  - treat a PING as validation
+  - infer historical intentionality from algebraic consistency alone
