@@ -1,0 +1,51 @@
+project_id: SATURN
+name: SATURN
+kind: EXPERIMENTAL_GENERATIVE_FORK
+status: ACTIVE_EXPERIMENT
+
+fork:
+  parent_project: SUN
+  parent_version: "SUN-1.0-working-freeze"
+  relation: FORKS_FROM
+
+inherits:
+  - SUN relational grammar
+  - frozen SUN transformations
+  - validated operator classes
+  - boundary behavior
+  - explicit constraints and residuals
+
+may_change:
+  - generative interpretation
+  - candidate descendant structure
+  - operational realization
+  - experimental operator composition
+
+must_not:
+  - silently amend SUN
+  - infer missing human values from structural elegance
+  - promote generated structure to historical evidence
+  - erase failed descendants or residuals
+
+human_authority_boundary:
+  source: SOPHIA
+  supplies:
+    - purpose
+    - needs
+    - goals
+    - principles
+    - priorities
+    - acceptable authority
+  saturn_supplies:
+    - candidate responsibilities
+    - source-native transitions
+    - dependencies
+    - state changes
+    - alternatives
+    - failure modes
+
+research_question: "If validated relational structure is genuinely generative, what new structure does it constrain or produce?"
+
+return_to_sun:
+  mechanism: MERGE_CANDIDATE
+  rule: "A SATURN result may become a SUN amendment candidate only through SUN's own validation protocol."
