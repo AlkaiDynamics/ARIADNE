@@ -1,0 +1,656 @@
+{
+  "seed_count": 12,
+  "corpus_size": 20,
+  "top_k": 8,
+  "scope": "Implemented retrieval/constraint ablations; not full six recommendation package benchmarks",
+  "rows": [
+    {
+      "seed": 0,
+      "configuration": "BM25 only",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 0,
+      "configuration": "Lexical + fuzzy",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 0,
+      "configuration": "Typed only",
+      "returned": 3,
+      "recall": 1.0,
+      "precision": 0.6666666666666666,
+      "wrong_operator_or_invalid": 1,
+      "truncated": false
+    },
+    {
+      "seed": 0,
+      "configuration": "Hybrid RRF",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 0,
+      "configuration": "Typed + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": false
+    },
+    {
+      "seed": 0,
+      "configuration": "Hybrid + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": true
+    },
+    {
+      "seed": 1,
+      "configuration": "BM25 only",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 1,
+      "configuration": "Lexical + fuzzy",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 1,
+      "configuration": "Typed only",
+      "returned": 3,
+      "recall": 1.0,
+      "precision": 0.6666666666666666,
+      "wrong_operator_or_invalid": 1,
+      "truncated": false
+    },
+    {
+      "seed": 1,
+      "configuration": "Hybrid RRF",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 1,
+      "configuration": "Typed + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": false
+    },
+    {
+      "seed": 1,
+      "configuration": "Hybrid + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": true
+    },
+    {
+      "seed": 2,
+      "configuration": "BM25 only",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 2,
+      "configuration": "Lexical + fuzzy",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 2,
+      "configuration": "Typed only",
+      "returned": 3,
+      "recall": 1.0,
+      "precision": 0.6666666666666666,
+      "wrong_operator_or_invalid": 1,
+      "truncated": false
+    },
+    {
+      "seed": 2,
+      "configuration": "Hybrid RRF",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 2,
+      "configuration": "Typed + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": false
+    },
+    {
+      "seed": 2,
+      "configuration": "Hybrid + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": true
+    },
+    {
+      "seed": 3,
+      "configuration": "BM25 only",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 3,
+      "configuration": "Lexical + fuzzy",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 3,
+      "configuration": "Typed only",
+      "returned": 3,
+      "recall": 1.0,
+      "precision": 0.6666666666666666,
+      "wrong_operator_or_invalid": 1,
+      "truncated": false
+    },
+    {
+      "seed": 3,
+      "configuration": "Hybrid RRF",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 3,
+      "configuration": "Typed + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": false
+    },
+    {
+      "seed": 3,
+      "configuration": "Hybrid + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": true
+    },
+    {
+      "seed": 4,
+      "configuration": "BM25 only",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 4,
+      "configuration": "Lexical + fuzzy",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 4,
+      "configuration": "Typed only",
+      "returned": 3,
+      "recall": 1.0,
+      "precision": 0.6666666666666666,
+      "wrong_operator_or_invalid": 1,
+      "truncated": false
+    },
+    {
+      "seed": 4,
+      "configuration": "Hybrid RRF",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 4,
+      "configuration": "Typed + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": false
+    },
+    {
+      "seed": 4,
+      "configuration": "Hybrid + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": true
+    },
+    {
+      "seed": 5,
+      "configuration": "BM25 only",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 5,
+      "configuration": "Lexical + fuzzy",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 5,
+      "configuration": "Typed only",
+      "returned": 3,
+      "recall": 1.0,
+      "precision": 0.6666666666666666,
+      "wrong_operator_or_invalid": 1,
+      "truncated": false
+    },
+    {
+      "seed": 5,
+      "configuration": "Hybrid RRF",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 5,
+      "configuration": "Typed + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": false
+    },
+    {
+      "seed": 5,
+      "configuration": "Hybrid + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": true
+    },
+    {
+      "seed": 6,
+      "configuration": "BM25 only",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 6,
+      "configuration": "Lexical + fuzzy",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 6,
+      "configuration": "Typed only",
+      "returned": 3,
+      "recall": 1.0,
+      "precision": 0.6666666666666666,
+      "wrong_operator_or_invalid": 1,
+      "truncated": false
+    },
+    {
+      "seed": 6,
+      "configuration": "Hybrid RRF",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 6,
+      "configuration": "Typed + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": false
+    },
+    {
+      "seed": 6,
+      "configuration": "Hybrid + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": true
+    },
+    {
+      "seed": 7,
+      "configuration": "BM25 only",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 7,
+      "configuration": "Lexical + fuzzy",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 7,
+      "configuration": "Typed only",
+      "returned": 3,
+      "recall": 1.0,
+      "precision": 0.6666666666666666,
+      "wrong_operator_or_invalid": 1,
+      "truncated": false
+    },
+    {
+      "seed": 7,
+      "configuration": "Hybrid RRF",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 7,
+      "configuration": "Typed + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": false
+    },
+    {
+      "seed": 7,
+      "configuration": "Hybrid + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": true
+    },
+    {
+      "seed": 8,
+      "configuration": "BM25 only",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 8,
+      "configuration": "Lexical + fuzzy",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 8,
+      "configuration": "Typed only",
+      "returned": 3,
+      "recall": 1.0,
+      "precision": 0.6666666666666666,
+      "wrong_operator_or_invalid": 1,
+      "truncated": false
+    },
+    {
+      "seed": 8,
+      "configuration": "Hybrid RRF",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 8,
+      "configuration": "Typed + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": false
+    },
+    {
+      "seed": 8,
+      "configuration": "Hybrid + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": true
+    },
+    {
+      "seed": 9,
+      "configuration": "BM25 only",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 9,
+      "configuration": "Lexical + fuzzy",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 9,
+      "configuration": "Typed only",
+      "returned": 3,
+      "recall": 1.0,
+      "precision": 0.6666666666666666,
+      "wrong_operator_or_invalid": 1,
+      "truncated": false
+    },
+    {
+      "seed": 9,
+      "configuration": "Hybrid RRF",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 9,
+      "configuration": "Typed + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": false
+    },
+    {
+      "seed": 9,
+      "configuration": "Hybrid + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": true
+    },
+    {
+      "seed": 10,
+      "configuration": "BM25 only",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 10,
+      "configuration": "Lexical + fuzzy",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 10,
+      "configuration": "Typed only",
+      "returned": 3,
+      "recall": 1.0,
+      "precision": 0.6666666666666666,
+      "wrong_operator_or_invalid": 1,
+      "truncated": false
+    },
+    {
+      "seed": 10,
+      "configuration": "Hybrid RRF",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 10,
+      "configuration": "Typed + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": false
+    },
+    {
+      "seed": 10,
+      "configuration": "Hybrid + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": true
+    },
+    {
+      "seed": 11,
+      "configuration": "BM25 only",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 11,
+      "configuration": "Lexical + fuzzy",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 11,
+      "configuration": "Typed only",
+      "returned": 3,
+      "recall": 1.0,
+      "precision": 0.6666666666666666,
+      "wrong_operator_or_invalid": 1,
+      "truncated": false
+    },
+    {
+      "seed": 11,
+      "configuration": "Hybrid RRF",
+      "returned": 8,
+      "recall": 1.0,
+      "precision": 0.25,
+      "wrong_operator_or_invalid": 6,
+      "truncated": true
+    },
+    {
+      "seed": 11,
+      "configuration": "Typed + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": false
+    },
+    {
+      "seed": 11,
+      "configuration": "Hybrid + constraints",
+      "returned": 2,
+      "recall": 1.0,
+      "precision": 1.0,
+      "wrong_operator_or_invalid": 0,
+      "truncated": true
+    }
+  ]
+}

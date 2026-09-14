@@ -1,0 +1,9 @@
+{
+  "ariadne_schema": 1,
+  "source": {"family": "synthetic-A", "tradition": "fixture-A", "language": "en", "witness_class": "SYNTHETIC_TEST"},
+  "records": [
+    {"kind": "partition", "full_set": 72, "displayed_set": 70, "residual_count": 2, "residual_status": "ACTIVE", "residual_function": "mediator", "carrier": "fixture-count", "decoder": "fixture-rule"},
+    {"kind": "claim", "subject": "fixture council", "predicate": "admitted count", "value": "70", "scope": "synthetic event 1"}
+  ],
+  "note": "Synthetic fixture only. Judah: a protected diagnostic thread. 12 × 6 → 72 is a different operator."
+}

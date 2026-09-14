@@ -1,0 +1,15 @@
+[Unit]
+Description=ARIADNE local algorithm research service
+After=network-online.target
+
+[Service]
+Type=simple
+# Adjust these two paths for your checkout and Python installation.
+WorkingDirectory=%h/ARIADNE
+ExecStart=/usr/bin/python3 %h/ARIADNE/warden.py serve
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=90
+
+[Install]
+WantedBy=default.target

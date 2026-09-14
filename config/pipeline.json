@@ -1,0 +1,24 @@
+{
+  "query_budget": 40,
+  "max_depth": 3,
+  "retrieval_limit": 30,
+  "candidate_limit": 400,
+  "display_limit": 40,
+  "stale_rounds": 2,
+  "novelty_floor": 0.05,
+  "near_duplicate_threshold": 0.85,
+  "exploration_weight": 0.3,
+  "diversity_weight": 0.2,
+  "protected_torches": [
+    "TORCH-JUDAH"
+  ],
+  "aliases": {},
+  "weights": {
+    "novelty": 0.25,
+    "diagnostic": 0.3,
+    "torch": 0.2,
+    "coverage_gap": 0.15,
+    "yield": 0.1
+  },
+  "multiscale_enabled": true
+}
