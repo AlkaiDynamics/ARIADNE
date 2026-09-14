@@ -1,0 +1,9 @@
+{
+  "ariadne_schema": 1,
+  "source": {"family": "synthetic-B", "tradition": "fixture-B", "language": "en", "witness_class": "SYNTHETIC_TEST"},
+  "records": [
+    {"kind": "partition", "full_set": 12, "displayed_set": 10, "residual_count": 2, "residual_status": "ACTIVE", "residual_function": "mediator"},
+    {"kind": "partition", "full_set": 36, "displayed_set": 35, "residual_count": 1},
+    {"kind": "claim", "subject": "fixture council", "predicate": "admitted count", "value": "72", "scope": "synthetic event 1"}
+  ]
+}

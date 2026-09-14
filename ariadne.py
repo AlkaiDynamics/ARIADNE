@@ -21,7 +21,9 @@ import json
 import re
 import shutil
 import sqlite3
+import subprocess
 import webbrowser
+from contextlib import nullcontext
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, Optional
@@ -187,10 +189,20 @@ def ensure_dirs() -> None:
         p.mkdir(parents=True, exist_ok=True)
 
 
+class ClosingConnection(sqlite3.Connection):
+    def __exit__(self, *args):
+        try:
+            return super().__exit__(*args)
+        finally:
+            self.close()
+
+
 def connect() -> sqlite3.Connection:
     ensure_dirs()
-    con = sqlite3.connect(DB_PATH)
+    con = sqlite3.connect(DB_PATH,timeout=30,factory=ClosingConnection)
     con.row_factory = sqlite3.Row
+    from ariadne_core.history import setup_hash
+    setup_hash(con)
     con.execute("PRAGMA foreign_keys=ON")
     return con
 
@@ -212,7 +224,9 @@ def init_db() -> None:
     ensure_dirs()
     with connect() as con:
         con.executescript(SCHEMA)
-        con.execute("INSERT OR REPLACE INTO meta(key,value) VALUES('schema_version','0.1')")
+        from ariadne_core.store import migrate
+        migrate(con)
+        con.execute("INSERT OR IGNORE INTO meta(key,value) VALUES('schema_version','0.1')")
         prior = con.execute("SELECT value FROM meta WHERE key='initialized_at'").fetchone()
         if not prior:
             con.execute("INSERT INTO meta(key,value) VALUES('initialized_at',?)", (now(),))
@@ -255,6 +269,13 @@ def sync_torches() -> None:
 
 def extract_text(path: Path) -> tuple[Optional[str], Optional[str]]:
     ext = path.suffix.lower()
+    if ext=='.pdf' and shutil.which('pdftotext'):
+        try:
+            result=subprocess.run(['pdftotext','-layout','-enc','UTF-8',str(path),'-'],capture_output=True,timeout=60,check=True)
+            text=result.stdout.decode('utf-8',errors='replace')
+            return (text,None) if text.strip() else (None,'PDF has no extractable text; OCR adapter required')
+        except (subprocess.SubprocessError,OSError) as exc:
+            return None,f'PDF extraction failed: {exc}'
     if ext not in TEXT_EXTENSIONS:
         return None, f"No v0 text extractor for {ext or 'extensionless/binary'} input"
     try:
@@ -365,15 +386,17 @@ def generate_queue(con, source_id: str) -> None:
         enqueue(con,source_id,None,"UP",f"Global check for transform {tr['from_value']} {tr['operator']} {tr['to_value']}","Check whether this transform changes any older cosmology, lineage, language, sound/music, TOL, ritual/magic, number, or historical-transmission problem.","LOW","HIGH")
 
 
-def register_source(path: Path) -> tuple[str,bool,dict[str,int]]:
+def register_source(path: Path, connection=None, pointer_depth=0) -> tuple[str,bool,dict[str,int]]:
     path=path.resolve(); digest=sha256_file(path); source_id=f"SRC-{digest[:16].upper()}"
     stats={"discrepancies":0,"transforms":0,"residuals":0,"assertions":0,"torch_hits":0}
-    with connect() as con:
+    with (nullcontext(connection) if connection is not None else connect()) as con:
         existing=con.execute("SELECT source_id FROM sources WHERE sha256=?",(digest,)).fetchone()
         if existing: return existing["source_id"],False,stats
         dest_dir=CUSTODY_DIR/source_id; dest_dir.mkdir(parents=True,exist_ok=True); dest=dest_dir/path.name
         if not dest.exists(): shutil.copy2(path,dest)
-        text,error=extract_text(path)
+        if sha256_file(dest) != digest:
+            raise ValueError(f"Custody checksum mismatch: {dest}")
+        text,error=extract_text(dest)
         con.execute("INSERT INTO sources(source_id,sha256,original_name,original_path,custody_path,extension,byte_size,text_extracted,created_at) VALUES(?,?,?,?,?,?,?,?,?)",(source_id,digest,path.name,str(path),str(dest.relative_to(ROOT)),path.suffix.lower(),path.stat().st_size,1 if text is not None else 0,now()))
         eid=stable_id("EVT",source_id,"INGEST",now())
         con.execute("INSERT INTO ingest_events(event_id,source_id,action,detail,created_at) VALUES(?,?,?,?,?)",(eid,source_id,"INGEST","Source registered in custody",now()))
@@ -381,6 +404,13 @@ def register_source(path: Path) -> tuple[str,bool,dict[str,int]]:
             insert_residual(con,source_id,"UNEXTRACTED_SOURCE",error or "No text extracted","source"); stats["residuals"]+=1
         else:
             stats.update(extract_candidates(con,source_id,text)); stats["torch_hits"]=match_torches(con,source_id,text); generate_queue(con,source_id)
+        from ariadne_core.acquisition import infer_lane
+        lane,reason=infer_lane(path,text or '')
+        con.execute('INSERT OR IGNORE INTO source_lanes VALUES(?,?,?)',(source_id,lane,reason))
+        if text:
+            from ariadne_core.acquisition import pointers,queue_manifest
+            leads=pointers(text)
+            if leads: queue_manifest(con,'\n'.join(leads),source_id,pointer_depth,'GUIDES_TO' if lane=='G0' else 'DISCOVERED_POINTER')
     return source_id,True,stats
 
 
@@ -460,10 +490,20 @@ def main(argv: Optional[list[str]]=None) -> int:
     p_run=sub.add_parser("run",help="Ingest inbox then generate/open the report"); p_run.add_argument("--no-open",action="store_true",help="Do not open browser")
     args=parser.parse_args(argv); cmd=args.command or "run"
     if cmd=="init": init_db(); print(f"ARIADNE initialized at {ROOT}")
-    elif cmd=="ingest": ingest(args.paths)
-    elif cmd=="report": report(args.open)
+    elif cmd=="ingest":
+        from warden import main as warden_main
+        return warden_main(['ingest',*args.paths])
+    elif cmd=="report":
+        from warden import main as warden_main
+        result=warden_main(['report'])
+        if args.open: webbrowser.open(REPORT_PATH.as_uri())
+        return result
     elif cmd=="status": status()
-    elif cmd=="run": ingest([]); report(not args.no_open)
+    elif cmd=="run":
+        from warden import main as warden_main
+        result=warden_main(['run'])
+        if not getattr(args,'no_open',False): webbrowser.open(REPORT_PATH.as_uri())
+        return result
     return 0
 
 if __name__ == "__main__":

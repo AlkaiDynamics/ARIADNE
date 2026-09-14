@@ -1,6 +1,7 @@
 # ARIADNE runtime state
 /db/*.sqlite
 /db/*.sqlite-*
+/db/warden.lock
 /custody/*
 !/custody/.gitkeep
 /artifacts/*
