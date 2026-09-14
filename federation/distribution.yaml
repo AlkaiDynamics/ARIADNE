@@ -1,0 +1,46 @@
+distribution_id: ALKAI-GREAT-WORK
+distribution_kind: DOWNSTREAM_FEDERATION
+repository: AlkaiDynamics/ARIADNE
+
+upstream:
+  repository: zhenrez/ARIADNE
+  commit: 709f8e7d38a98761c6442cce83663ecaa35b3285
+  sync_policy: EXPLICIT_PINNED_UPGRADE
+
+ownership:
+  upstream_owns:
+    - ariadne_core
+    - ariadne.py
+    - warden.py
+    - generic schemas
+    - generic epistemic contracts
+    - generic tests
+  downstream_owns:
+    - profiles/great-work
+    - federation
+    - checkpoints
+    - active research questions
+    - project torches
+    - project adapters
+    - research-state
+
+policy:
+  repository_fork_is_not_project_fork: true
+  destructive_project_merge: false
+  research_data_flows_upstream_automatically: false
+  generic_features_return_upstream_by_proposal: true
+  upstream_upgrade_requires_explicit_pin: true
+
+projects:
+  - AYLI
+  - SUN
+  - SATURN
+  - SOPHIA
+  - ARGO_LIFELINE
+  - HARMONIA_OCCULTA
+  - ROSETTAS
+
+notes:
+  - "Canonical ARIADNE owns reusable mechanism and specification."
+  - "This distribution owns Great Work policy, state, fork instances, checkpoints, torches, and adapters."
+  - "Project meaning remains project-owned; ARIADNE owns relationships between project states."
