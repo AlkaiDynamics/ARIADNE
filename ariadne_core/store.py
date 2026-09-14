@@ -122,6 +122,8 @@ def migrate(con):
     con.executescript(SCHEMA)
     from .federation import install as install_federation
     install_federation(con)
+    from .inventory import install as install_inventory
+    install_inventory(con)
     from .history import install_history
     install_history(con)
     con.execute("INSERT OR IGNORE INTO pipeline_state VALUES('schema','1')")

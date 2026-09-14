@@ -36,9 +36,36 @@ Therefore:
 
 This contract is designed specifically to avoid losing lines whose handling has not yet been decided.
 
+## Inventory before classification
+
+ARIADNE retains discovered resources even when their project relationship is not yet known. `federation_inventory` can hold:
+
+```text
+NAMED_LINE
+REPOSITORY
+GIT_BRANCH
+ARTIFACT
+OTHER
+```
+
+An item may remain unclassified indefinitely. Inventory status controls attention, not existence.
+
+This is particularly important for source-control branches. A discovered Git branch is recorded as a branch observation, but it does **not** automatically create a durable ARIADNE FORK or project relation.
+
+```text
+observe repository R
+observe Git branch R#B
+!=
+assert project P
+!=
+assert durable FORK F
+```
+
+Later classification creates an additional explicit mapped observation. The original unclassified observation remains in history rather than being overwritten. This preserves branches and repositories whose eventual role has not yet been decided.
+
 ## Repository observations
 
-Repository discovery is stored separately from project identity. An observation may be:
+Repository discovery mapped to a known project is stored separately from project identity. An observation may be:
 
 ```text
 OBSERVED
