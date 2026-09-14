@@ -1,0 +1,33 @@
+project_id: AYLI
+name: As You Like It
+kind: RELATIONAL_RECONSTRUCTION_CORPUS
+repository: AlkaiDynamics/AYLI
+status: ACTIVE
+
+owns:
+  - historical and comparative research corpus
+  - typed transform tables
+  - witness and source-native structure views
+  - prediction and residual ledgers
+  - claim-evolution history
+
+uses:
+  - ARIADNE epistemic firewall
+  - ARIADNE P0 prior-art gate
+  - ARIADNE fork and handoff contracts
+
+must_not:
+  - collapse variants into one preferred reading
+  - treat shared cardinality as shared operator
+  - count downstream checksums as independent corroboration
+  - silently rewrite SUN or other sibling projects
+
+next_schema_direction:
+  - witness_native_structure
+  - transform_operator
+  - field_prior_art_context
+  - correspondence_prediction
+
+notes:
+  - "Matrices are generated views over normalized evidence and relations, not manually maintained truth tables."
+  - "Prior-art context should link to ARIADNE field-census records rather than bloating native transform rows."
