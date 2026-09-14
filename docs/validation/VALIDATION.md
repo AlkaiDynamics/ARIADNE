@@ -30,6 +30,11 @@ The 42-test regression suite passes. It covers:
 - continuous watch cycles, a second writer rejected by the OS lock;
 - multiscale membership preservation and escaped report markup.
 
+Cross-platform CI initially exposed an open SQLite backup handle that prevented
+renaming a snapshot on Windows. Snapshot/recovery connections now close explicitly
+before rename or return. The continuous-worker test also fails on ERROR_RETRY,
+rather than accepting a query run when snapshot creation failed.
+
 The local HTTP interface was exercised through a spawned server process: feed
 page, operational status, generated report, unauthenticated-write rejection and
 graceful SIGTERM shutdown. External acquisition behavior is covered with injected

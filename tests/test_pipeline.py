@@ -175,7 +175,7 @@ class PipelineTests(unittest.TestCase):
             actual=[dict(r) for r in self.con.execute(f'SELECT * FROM "{table}"')]
             self.assertEqual(sorted(map(lambda x:json.dumps(x,sort_keys=True),actual)),sorted(map(lambda x:json.dumps(x,sort_keys=True),rows)),table)
         path=snapshot(self.con,self.root);target=self.root/'recovered.sqlite';recover(path,target)
-        with sqlite3.connect(target) as restored:
+        with contextlib.closing(sqlite3.connect(target)) as restored:
             self.assertEqual(self.con.execute('SELECT COUNT(*) FROM branches').fetchone()[0],restored.execute('SELECT COUNT(*) FROM branches').fetchone()[0])
         with self.assertRaises(ValueError):recover(path,target)
 
@@ -208,6 +208,7 @@ class PipelineTests(unittest.TestCase):
         self.add('a.txt','72 -> 70 + 2')
         with contextlib.redirect_stdout(io.StringIO()):watch(interval=.001,budget=2,cycles=3)
         self.assertTrue((self.root/'artifacts/watch_status.json').exists())
+        self.assertNotEqual('ERROR_RETRY',json.loads((self.root/'artifacts/watch_status.json').read_text())['status'])
         self.assertGreater(self.con.execute('SELECT COUNT(*) FROM query_runs').fetchone()[0],0)
 
     def test_os_lock_prevents_second_writer(self):

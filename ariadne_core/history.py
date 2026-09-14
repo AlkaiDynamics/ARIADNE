@@ -6,6 +6,7 @@ attacker who controls both database and backups. Never prune research history.
 import hashlib
 import json
 import sqlite3
+from contextlib import closing
 from pathlib import Path
 from .store import encoded, event
 
@@ -96,7 +97,7 @@ def snapshot(con,root):
     if path.exists():
         return path
     temporary = path.with_suffix('.tmp')
-    with sqlite3.connect(temporary) as dest:
+    with closing(sqlite3.connect(temporary)) as dest:
         con.backup(dest)
         if dest.execute('PRAGMA integrity_check').fetchone()[0] != 'ok':
             raise ValueError('Snapshot integrity check failed')
@@ -116,11 +117,11 @@ def recover(snapshot_path,target):
     manifest = json.loads(source.with_suffix('.json').read_text(encoding='utf-8'))
     if hashlib.sha256(source.read_bytes()).hexdigest() != manifest['sha256']:
         raise ValueError('Snapshot checksum mismatch')
-    with sqlite3.connect(source) as src:
+    with closing(sqlite3.connect(source)) as src:
         src.row_factory=sqlite3.Row
         if not verify_history(src) or src.execute('PRAGMA integrity_check').fetchone()[0] != 'ok':
             raise ValueError('Snapshot verification failed')
         target.parent.mkdir(parents=True,exist_ok=True)
-        with sqlite3.connect(target) as dst:
+        with closing(sqlite3.connect(target)) as dst:
             src.backup(dst)
     return target
