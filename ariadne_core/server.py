@@ -33,23 +33,8 @@ def accept_message(con,root,message_id,stream,content):
     return dict(checkpoints_created=count,pending_messages=len(pending))
 
 
-PAGE='''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ARIADNE</title>
-<style>body{font:16px/1.5 system-ui;background:#101722;color:#edf3fa;margin:0}main{max-width:1000px;padding:28px;margin:auto}h1{font-size:38px;margin:0}header{display:flex;justify-content:space-between;align-items:center}.sub{color:#b9c8d8}#drop{border:2px dashed #80c8b7;padding:35px;text-align:center;border-radius:14px;margin:28px 0;background:#172431}textarea{box-sizing:border-box;width:100%;min-height:145px;background:#192635;color:white;border:1px solid #53677e;border-radius:8px;padding:14px;font:inherit}button,a.button{display:inline-block;background:#93d5c2;color:#102820;border:0;border-radius:7px;padding:10px 18px;margin:12px 8px 12px 0;font:inherit;cursor:pointer}input{font:inherit}#status{color:#9fe0c9}#message{white-space:pre-wrap}#metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.metric{padding:16px;background:#1c2a3b;border-radius:10px}.metric strong{display:block;font-size:26px}a{color:#a4e8d5}details{margin-top:22px}</style>
-<main><header><h1>ARIADNE</h1><span id="status">STARTING</span></header><p class="sub">Feed material. Inspect findings. Trace why.</p>
-<section id="drop" tabindex="0" role="button" aria-label="Choose or drop research files"><strong>DROP FILES HERE</strong><p>PDFs, text, notes, HTML, tables, scans, or chat exports</p><input id="files" type="file" multiple aria-label="Choose files"></section>
-<label for="manifest">Paste URLs, DOIs, arXiv IDs, or a whole source list</label><textarea id="manifest" placeholder="https://…&#10;doi:10.…&#10;arXiv:…"></textarea><button id="acquire">Acquire</button><a class="button" href="/report" target="_blank">Findings · Torches · Coverage</a>
-<p id="message" role="status"></p><div id="metrics"></div>
-<details><summary>Chat guidance and evidence separation</summary><label>Import a chat export explicitly as G0 guidance <input id="guidance" type="file" multiple></label><p>Recognized chat exports and 20-message checkpoints enter G0 guidance. They can generate searches but cannot support evidence connections. Other files enter E0 candidate custody. Verification and corroboration require recorded evidence; the engine does not award E1 or E2 automatically.</p><p>Coverage reports observed local work and acquisition outcomes. Total research coverage is unknown.</p><p>Keep this local process running to continue acquisition and discovery. Ctrl+C stops it safely. Restart resumes from stored state.</p></details></main>
-<script>
-const token='__TOKEN__';
-async function post(path,data){const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json','X-ARIADNE-Token':token},body:JSON.stringify(data)});const j=await r.json();if(!r.ok)throw Error(j.error||r.status);return j;}
-async function upload(files,lane='AUTO'){for(const f of files){try{if(f.size>25*1024*1024)throw Error('File exceeds the current 25 MiB upload bound; original not changed.');const bytes=new Uint8Array(await f.arrayBuffer());let s='';for(let i=0;i<bytes.length;i+=8192)s+=String.fromCharCode(...bytes.subarray(i,i+8192));await post('/api/upload',{name:f.name,data:btoa(s),lane});document.querySelector('#message').textContent='Queued: '+f.name;}catch(e){document.querySelector('#message').textContent=e.message;}}refresh();}
-document.querySelector('#files').onchange=e=>upload(e.target.files);
-document.querySelector('#guidance').onchange=e=>upload(e.target.files,'G0');
-const drop=document.querySelector('#drop');drop.ondragover=e=>e.preventDefault();drop.ondrop=e=>{e.preventDefault();upload(e.dataTransfer.files)};drop.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();document.querySelector('#files').click()}};
-document.querySelector('#acquire').onclick=async()=>{try{let j=await post('/api/acquire',{text:document.querySelector('#manifest').value});document.querySelector('#message').textContent=j.queued+' distinct pointers queued; original manifest retained.';refresh()}catch(e){document.querySelector('#message').textContent=e.message}};
-async function refresh(){try{const r=await fetch('/api/status');const j=await r.json();document.querySelector('#status').textContent=j.worker.status;const box=document.querySelector('#metrics');box.replaceChildren();for(const [name,value] of Object.entries(j.metrics)){const d=document.createElement('div');d.className='metric';const n=document.createElement('strong');n.textContent=value;d.append(n,document.createTextNode(name));box.append(d)}}catch(e){document.querySelector('#status').textContent='CONNECTION LOST'}}refresh();setInterval(refresh,5000);
-</script></html>'''
+from .dashboard import PAGE, progress_summary, submit_manifest
+
 
 
 def serve(port=8765,interval=10):
@@ -70,6 +55,7 @@ def serve(port=8765,interval=10):
             if path=='/':self.send(200,PAGE.replace('__TOKEN__',token),'text/html; charset=utf-8')
             elif path=='/api/status':
                 with ariadne.connect() as con:
+                    progress=progress_summary(con)
                     metrics={}
                     for table,label in (('sources','Sources'),('graph_edges','Typed relations'),('active_findings','Current evidence candidates'),('branches','Retained searches')):
                         metrics[label]=con.execute(f'SELECT COUNT(*) FROM {table}').fetchone()[0]
@@ -82,7 +68,7 @@ def serve(port=8765,interval=10):
                 health=ariadne.ARTIFACTS_DIR/'watch_status.json'
                 try:worker=json.loads(health.read_text())
                 except (OSError,ValueError):worker=dict(status='STARTING')
-                self.send(200,encoded(dict(worker=worker,metrics=metrics)))
+                self.send(200,encoded(dict(worker=worker,metrics=metrics,progress=progress)))
             elif path in ('/report','/pipeline_state.json','/neurite_notes.md'):
                 name={'/report':'latest_report.html'}.get(path,path.lstrip('/'))
                 file=ariadne.ARTIFACTS_DIR/name
@@ -107,7 +93,7 @@ def serve(port=8765,interval=10):
                     if self.path=='/api/acquire':
                         raw=body['text']
                         if not isinstance(raw,str):raise ValueError('text must be a string')
-                        result=dict(queued=queue_manifest(con,raw))
+                        result=submit_manifest(con,raw)
                     elif self.path=='/api/upload':
                         data=base64.b64decode(body['data'],validate=True)
                         if len(data)>MAX_BYTES:raise ValueError('upload exceeds 25 MiB')

@@ -409,7 +409,10 @@ def register_source(path: Path, connection=None, pointer_depth=0) -> tuple[str,b
         con.execute('INSERT OR IGNORE INTO source_lanes VALUES(?,?,?)',(source_id,lane,reason))
         if text:
             from ariadne_core.acquisition import pointers,queue_manifest
-            leads=pointers(text)
+            # Bookmark exports carry resource URLs in attributes that the text
+            # extractor intentionally removes. Preserve and inspect the original.
+            pointer_text=dest.read_text(encoding='utf-8-sig',errors='replace') if dest.suffix.lower() in ('.html','.htm') else text
+            leads=pointers(pointer_text)
             if leads: queue_manifest(con,'\n'.join(leads),source_id,pointer_depth,'GUIDES_TO' if lane=='G0' else 'DISCOVERED_POINTER')
     return source_id,True,stats
 

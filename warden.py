@@ -87,6 +87,10 @@ def watch(interval=30,budget=None,cycles=None,stop_event=None,mutex=None):
                 with ariadne.connect() as con:
                     acquisition_due=bool(con.execute("SELECT 1 FROM acquisition_jobs WHERE status IN ('QUEUED','FETCH_FAILED') AND attempts<3 AND next_attempt<=? LIMIT 1",(time.time(),)).fetchone())
                 if current == previous and (current != processed or pending or acquisition_due):
+                    # Publish active work before a potentially slow network batch.
+                    (ariadne.ARTIFACTS_DIR/'watch_status.json').write_text(
+                        json.dumps(dict(status='PROCESSING',poll=count,pending=True)),
+                        encoding='utf-8')
                     from contextlib import nullcontext
                     with (mutex if mutex is not None else nullcontext()):
                         result = cycle(budget=budget)

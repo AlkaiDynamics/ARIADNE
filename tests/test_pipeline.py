@@ -270,7 +270,93 @@ class PipelineTests(unittest.TestCase):
         self.assertIsNone(self.con.execute('SELECT * FROM active_findings WHERE finding_id=?',(old,)).fetchone())
 
 
+    def test_manifest_repeated_submit_reports_only_new_links(self):
+        from ariadne_core.dashboard import submit_manifest
+        first=submit_manifest(self.con,'https://example.org/paper\nhttps://example.org/paper')
+        again=submit_manifest(self.con,'https://example.org/paper\nhttps://example.org/new')
+        self.assertEqual(dict(queued=1,detected=1,existing=0),first)
+        self.assertEqual(dict(queued=1,detected=2,existing=1),again)
+        empty=submit_manifest(self.con,'A work title without a pointer')
+        self.assertEqual(0,empty['detected'])
+        self.assertIn('A work title',self.con.execute(
+            "SELECT payload FROM pipeline_events WHERE stage='ACQUISITION_MANIFEST' ORDER BY seq DESC LIMIT 1").fetchone()[0])
+
+    def test_bookmark_export_queues_href_and_retains_original(self):
+        sid=self.add('bookmarks.html',"<DL><A HREF='https://example.org/paper?a=1&amp;b=2'>Paper</A></DL>")
+        self.assertIsNotNone(self.con.execute(
+            "SELECT * FROM acquisition_jobs WHERE url='https://example.org/paper?a=1&b=2'").fetchone())
+        self.assertEqual(1,self.con.execute('SELECT COUNT(*) FROM acquisition_jobs').fetchone()[0])
+        custody=self.con.execute('SELECT custody_path FROM sources WHERE source_id=?',(sid,)).fetchone()[0]
+        self.assertIn('&amp;', (self.root/custody).read_text())
+
+    def test_progress_separates_retries_gaps_and_indexed_sources(self):
+        from ariadne_core.acquisition import queue_manifest
+        from ariadne_core.dashboard import progress_summary
+        self.add('paper.txt','72 -> 70 + 2');self.compile()
+        queue_manifest(self.con,'\n'.join('https://example.org/'+str(i) for i in range(5)))
+        for i,status,attempts in [(0,'LINKED',1),(1,'FETCH_FAILED',1),
+                                   (2,'FETCH_FAILED',3),(3,'ROBOTS_BLOCKED',1)]:
+            self.con.execute('UPDATE acquisition_jobs SET status=?,attempts=? WHERE url=?',
+                             (status,attempts,'https://example.org/'+str(i)))
+        before=self.con.execute('SELECT COUNT(*) FROM state_versions').fetchone()[0]
+        p=progress_summary(self.con)
+        self.assertEqual(2,p['queued']);self.assertEqual(2,p['attention_jobs'])
+        self.assertEqual(1,p['acquired']);self.assertEqual(5,p['total_pointers'])
+        self.assertEqual(1,p['indexed']);self.assertEqual(0,p['extraction_gaps'])
+        self.assertEqual(before,self.con.execute('SELECT COUNT(*) FROM state_versions').fetchone()[0])
+
+    def test_progress_does_not_call_binary_custody_indexed(self):
+        from ariadne_core.dashboard import progress_summary
+        path=self.root/'inbox'/'scan.bin';path.write_bytes(b'\x00\x01')
+        ariadne.register_source(path)
+        p=progress_summary(self.con)
+        self.assertEqual(1,p['sources']);self.assertEqual(0,p['indexed'])
+        self.assertEqual(1,p['extraction_gaps'])
+
+    def test_resource_list_to_graph_without_model_or_network(self):
+        from ariadne_core.acquisition import acquire
+        from ariadne_core.dashboard import progress_summary
+        self.add('resources.md','[Primary source](https://example.org/primary)')
+        calls=[]
+        def fixture(url):
+            calls.append(url)
+            return 'FETCHED',b'72 -> 70 + 2 active',dict(url=url,headers={'content-type':'text/plain'})
+        acquire(self.con,self.root,1,fetcher=fixture);self.compile()
+        p=progress_summary(self.con)
+        self.assertEqual(['https://example.org/primary'],calls)
+        self.assertEqual(1,p['linked']);self.assertEqual(1,p['findings'])
+        self.assertGreater(self.con.execute('SELECT COUNT(*) FROM graph_edges').fetchone()[0],0)
+        self.assertTrue(verify_history(self.con));self.assertTrue(verify_events(self.con))
+
+
 class AlgorithmTests(unittest.TestCase):
+
+    def test_pointer_punctuation_preserves_balanced_doi_parentheses(self):
+        from ariadne_core.acquisition import pointers
+        self.assertEqual(['https://doi.org/10.1234/foo(bar)'],
+                         pointers('[paper](https://doi.org/10.1234/foo(bar))'))
+        self.assertEqual(['https://example.org/a'],pointers("<a href='https://example.org/a'>A</a>"))
+
+    def test_dashboard_javascript_syntax(self):
+        import shutil,subprocess,re
+        from ariadne_core.dashboard import PAGE
+        node=shutil.which('node')
+        if not node:self.skipTest('Node is only used for dashboard development checks')
+        script=re.search(r'<script>(.*?)</script>',PAGE,re.S).group(1)
+        result=subprocess.run([node,'--check'],input=script,text=True,capture_output=True)
+        self.assertEqual(0,result.returncode,result.stderr)
+
+
+    def test_music_scalar_paths_keep_histories_but_collapse_values(self):
+        from fractions import Fraction
+        states=[('',Fraction(1))]
+        for depth in range(1,9):
+            states=[(path+label,value*ratio) for path,value in states
+                    for label,ratio in [('R',Fraction(2,3)),('L',Fraction(3,4))]]
+            self.assertEqual(2**depth,len(states))
+            self.assertEqual(depth+1,len({value for _,value in states}))
+        self.assertEqual(Fraction(1,2),Fraction(2,3)*Fraction(3,4))
+
     def test_anti_unification_reuses_variables(self):
         self.assertEqual(('f','?v0','?v0'),anti_unify(('f',1,1),('f',2,2)))
 

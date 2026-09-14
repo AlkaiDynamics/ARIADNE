@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import html
 import http.client
 import ipaddress
 import json
@@ -39,12 +40,15 @@ def infer_lane(path,text):
 
 def pointers(text):
     """Parse a messy manifest. Unknown identifiers are retained separately by caller."""
-    found=re.findall(r'https?://[^\s<>"\]]+',text)
-    found += ['https://doi.org/'+m for m in re.findall(r'(?i)(?:doi\s*:\s*|(?<![\w/]))(10\.\d{4,9}/[^\s<>"\]]+)',text)]
+    text=html.unescape(text)
+    found=re.findall(r"""https?://[^\s<>"'\]]+""",text)
+    found += ['https://doi.org/'+m for m in re.findall(r"""(?i)(?:doi\s*:\s*|(?<![\w/]))(10\.\d{4,9}/[^\s<>"'\]]+)""",text)]
     found += ['https://arxiv.org/abs/'+m for m in re.findall(r'(?i)arxiv\s*:\s*(\d{4}\.\d{4,5}(?:v\d+)?)',text)]
     result=[]
     for value in found:
-        value=value.rstrip('.,;)]}')
+        value=value.rstrip('.,;]}')
+        while value.endswith(')') and value.count(')')>value.count('('):
+            value=value[:-1]
         parts=urlsplit(value)
         if parts.scheme in ('http','https') and parts.hostname:
             # Preserve case-sensitive paths/queries; strip navigation fragments only.

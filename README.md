@@ -8,11 +8,15 @@ ARIADNE is a feed-first research engine for preserving evidence, competing inter
 
 ARIADNE is designed so the operator does **not** need to build graph nodes, write database queries, or remember unresolved research branches.
 
-The intended interaction is:
+The everyday interaction is:
 
-1. Put material in `inbox/`.
-2. Run `python ariadne.py ingest` (or double-click `RUN_ARIADNE.bat` on Windows).
-3. Open `artifacts/latest_report.html`.
+1. Start `python warden.py serve` (or double-click `OPEN_ARIADNE.bat` on Windows).
+2. Open http://127.0.0.1:8765 and drop files or paste a resource list.
+3. Watch progress; open **View findings** when you want the evidence details.
+
+The browser page stays small. The local worker handles custody, acquisition,
+indexing, candidate graph connections, and version history. Closing the tab does
+not stop the worker; keep the process and computer running.
 
 Everything else is internal machinery.
 
@@ -52,6 +56,9 @@ python warden.py watch
 `WATCH_ARIADNE.bat` provides the Windows equivalent. Startup/restart templates are
 in `ops/`; they are not installed automatically. The computer must remain running.
 The worker waits when idle and resumes persisted jobs on restart.
+
+The [small-dashboard guide](docs/RESEARCH_INBOX.md) explains browser collection,
+progress counts, supported inputs, and the separate musical/TOL experiment.
 
 The [pipeline design](docs/PIPELINE_DESIGN.md) contains the six-stack comparison,
 prison flowchart, algorithm placement, Neurite investigation, extension register,
