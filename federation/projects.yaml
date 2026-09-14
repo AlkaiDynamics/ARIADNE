@@ -1,0 +1,51 @@
+federation_id: GREAT-WORK
+projects:
+  - project_id: AYLI
+    role: EVIDENCE_ATLAS
+    owns:
+      - witnesses
+      - variants
+      - domain units
+      - correspondence mappings
+      - generated atlas views
+    ariadne_role: provenance_lineage_fork_governance
+
+  - project_id: SUN
+    role: THEORY_MODEL_LINEAGE
+    owns:
+      - equations
+      - operator definitions
+      - frozen model snapshots
+      - ablations
+      - preregistered predictions
+      - theory-specific controls
+    ariadne_role: snapshot_lineage_validation_dependencies
+
+  - project_id: SATURN
+    role: APPLICATION_FORK
+    consumes:
+      - pinned SUN snapshot
+    owns:
+      - instantiation hypotheses
+      - generated architecture consequences
+      - application controls
+      - return proposals
+    hard_rule: SATURN_SUCCESS_DOES_NOT_VALIDATE_SUN
+
+  - project_id: SOPHIA
+    role: PROJECT_WORKSPACE
+    status: REGISTERED_UNSPECIFIED
+
+  - project_id: ARGO_LIFELINE
+    role: OPERATIONAL_SYSTEM
+    status: REGISTERED_UNSPECIFIED
+
+  - project_id: HARMONIA_OCCULTA
+    role: HISTORICAL_HARMONIC_RESEARCH
+    status: REGISTERED
+
+  - project_id: ROSETTAS
+    role: RECONSTRUCTION_RESEARCH
+    status: REGISTERED
+
+fork_identity_rule: PROJECT_FORKS_ARE_NOT_GIT_FORKS_OR_BRANCHES
