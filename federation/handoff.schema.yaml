@@ -1,0 +1,63 @@
+schema_version: 1
+name: ARIADNE_INTERPROJECT_HANDOFF
+required:
+  - artifact_id
+  - project_id
+  - result
+  - claim_type
+  - epistemic_zone
+  - provenance
+  - inputs_dependencies
+  - residuals_failures
+  - prior_art_status
+  - prediction_status
+
+fields:
+  artifact_id:
+    type: string
+  project_id:
+    type: string
+  fork_id:
+    type: [string, null]
+  parent_version:
+    type: [string, null]
+  result:
+    type: object_or_text
+  claim_type:
+    type: string
+  epistemic_zone:
+    enum: [G0, E0, E1, E2]
+  admissibility_scope:
+    type: [list, null]
+  provenance:
+    type: list
+  inputs_dependencies:
+    type: list
+  inherited_invariants:
+    type: list
+    default: []
+  introduced_assumptions:
+    type: list
+    default: []
+  operator_transform:
+    type: [object_or_text, null]
+  residuals_failures:
+    type: list
+  prior_art_status:
+    enum: [KNOWN, KNOWN_SEPARATELY, APPARENT_CONTRIBUTION, NOT_YET_CENSUSED, UNKNOWN]
+  prediction_status:
+    enum: [NOT_APPLICABLE, DEVELOPMENT, FROZEN, WITHHELD, REVEALED_HIT, REVEALED_PARTIAL, REVEALED_MISS, UNKNOWN]
+  confidence_uncertainty:
+    type: [object_or_text, null]
+  return_trigger:
+    type: [object_or_text, null]
+  candidate_consumers:
+    type: list
+    default: []
+
+invariants:
+  - "Imported artifacts retain their source project identity and provenance."
+  - "A downstream import never mutates the source artifact."
+  - "G0 and E0 cannot support research-object claims."
+  - "PING is not equivalent to SUPPORTS or CORROBORATES."
+  - "APPARENT_CONTRIBUTION is not a novelty claim."
