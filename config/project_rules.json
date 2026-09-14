@@ -1,0 +1,113 @@
+{
+  "rules_version": "0.2",
+  "rules": [
+    {
+      "rule_id": "GPR-001",
+      "title": "Twenty-message ARIADNE checkpoint",
+      "status": "ACTIVE",
+      "scope": "GLOBAL",
+      "adopted": "2026-09-13",
+      "cadence": {
+        "completed_exchanges": 10,
+        "user_inputs": 10,
+        "assistant_outputs": 10,
+        "conversation_visible_messages": 20,
+        "count_tool_calls": false,
+        "count_system_messages": false,
+        "count_developer_messages": false,
+        "on_uncertain_count": "CHECKPOINT_EARLY"
+      },
+      "action": "PUSH_PROGRESS_SINCE_PREVIOUS_CHECKPOINT_TO_ARIADNE",
+      "destination_pattern": "checkpoints/YYYY-MM-DD/CP-YYYYMMDD-NNNN.md",
+      "operator_action_required": false,
+      "epistemic_zone": "G0",
+      "epistemic_class": "DISCOVERY_GUIDANCE",
+      "evidence_eligible": false,
+      "claim_support_weight": 0,
+      "corroboration_eligible": false,
+      "derivative_inherits_zone": true,
+      "required_sections": [
+        "new_discoveries",
+        "source_and_evidence_acquisitions",
+        "hypothesis_changes",
+        "corrections_and_superseded_states",
+        "decisions_and_rules",
+        "equation_schema_transform_mapping_changes",
+        "torch_changes",
+        "bright_red_items",
+        "failures_controls_residuals_outliers",
+        "repo_artifact_changes",
+        "recontextualized_older_threads",
+        "unresolved_questions_and_return_triggers",
+        "forward_and_recursive_paths"
+      ],
+      "allowed_relation_types": [
+        "GUIDES_TO",
+        "DISCOVERED_VIA",
+        "TESTS",
+        "CONTRADICTS_GUIDANCE"
+      ],
+      "forbidden_relation_types": [
+        "SUPPORTS",
+        "CORROBORATES"
+      ],
+      "write_failure_behavior": "QUEUE_PENDING_PUSH_AND_CONTINUE"
+    },
+    {
+      "rule_id": "GPR-002",
+      "title": "Epistemic firewall",
+      "status": "ACTIVE",
+      "scope": "GLOBAL",
+      "policy": "docs/EPISTEMIC_FIREWALL.md",
+      "config": "config/epistemic_policy.json"
+    },
+    {
+      "rule_id": "GPR-003",
+      "title": "Prior-art and field-census gate",
+      "status": "ACTIVE",
+      "scope": "GLOBAL_RESEARCH",
+      "adopted": "2026-09-14",
+      "action": "RESEARCH_THE_RESEARCH_BEFORE_ORIGINAL_DEEP_SOURCE_SYNTHESIS",
+      "sequence": [
+        "QUESTION",
+        "FIELD_CENSUS",
+        "PRIOR_ART",
+        "VOCABULARY",
+        "KNOWN_RESULTS",
+        "KNOWN_FAILURES",
+        "SOURCE_MAP",
+        "ORIGINAL_INVESTIGATION",
+        "CONTRIBUTION_DELTA"
+      ],
+      "gate_opens_when": [
+        "REASONABLE_FIELD_MAP_ESTABLISHED",
+        "DOCUMENTED_BOUNDED_SEARCH_SATURATED_WITHOUT_APPLICABLE_PRIOR_ART"
+      ],
+      "required_first_order_questions": [
+        "WHO_HAS_PROPOSED_THIS_OR_A_STRUCTURAL_EQUIVALENT_BEFORE",
+        "WHAT_FIELDS_STUDY_IT",
+        "WHAT_TERMINOLOGY_DO_THEY_USE",
+        "WHAT_ARE_THE_CLOSEST_ESTABLISHED_MODELS",
+        "WHAT_REVIEWS_SURVEYS_BIBLIOGRAPHIES_OR_META_ANALYSES_MAP_THE_SPACE",
+        "WHO_ARE_THE_CANONICAL_AUTHORS",
+        "WHAT_COMPETING_EXPLANATIONS_EXIST",
+        "WHAT_HAS_BEEN_FALSIFIED_CRITICIZED_OR_ABANDONED",
+        "WHAT_REMAINS_UNRESOLVED",
+        "WHAT_PRIMARY_SOURCES_OR_DATASETS_DOES_THE_FIELD_USE",
+        "WHAT_HISTORICAL_LINEAGES_HAVE_ALREADY_BEEN_CONNECTED",
+        "WHAT_TERMINOLOGY_CHANGED_OVER_TIME",
+        "WHAT_ADJACENT_DISCIPLINES_REDISCOVERED_THE_STRUCTURE",
+        "WHAT_PRIOR_ART_SEARCHES_PRODUCED_NOTHING"
+      ],
+      "hard_rules": {
+        "bibliographic_metadata_zone": "G0",
+        "bibliographic_metadata_may_support_underlying_historical_claim": false,
+        "secondary_source_may_be_primary_for_its_own_authorship_or_proposal": true,
+        "secondary_source_is_not_automatically_primary_for_historical_subject_claim": true,
+        "no_novelty_claim_from_first_failed_search": true,
+        "failed_searches_are_recorded": true,
+        "manual_rediscovery_of_well_mapped_field_is_avoided": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "enabled": true,
+    "question": "Can local closure or reciprocal return coexist with a global level, register, octave, or generation change, especially in musical interval and comma systems?",
+    "scope": "Current Completed Harmony / MI-FA boundary investigation; prior-art and field vocabulary census before further original cross-domain synthesis.",
+    "seed_terms": [
+      "local closure global state change",
+      "comma pump",
+      "pitch class register",
+      "monodromy",
+      "graph covering",
+      "voltage graph",
+      "MI-FA semitone",
+      "musical comma"
+    ]
+  }
+]

@@ -46,15 +46,71 @@ def single_writer(root):
                 fcntl.flock(handle,fcntl.LOCK_UN)
 
 
+def _prepare_field_census(con, w):
+    """Run P0 before any Warden compile/reconnect/original synthesis."""
+    from ariadne_core.field_census import (ensure_all, gate_status, install, process,
+                                           queue_prior_art_leads, settings,
+                                           sync_question_config)
+    from ariadne_core.history import install_history
+    install(con)
+    # Field-census tables are additive and receive the same append-only row history.
+    install_history(con)
+    sync_question_config(con, ariadne.ROOT)
+    ensure_all(con, w.config)
+    con.commit()
+    from ariadne_core.acquisition import acquire
+    acquire(con, ariadne.ROOT, budget=max(4, len(settings(w.config)['providers'])))
+    process(con, ariadne.ROOT, w.config)
+    # Bibliographic index responses teach vocabulary and prior-art identity only.
+    # Keep them out of E0 evidence even though the exact bytes remain in custody.
+    for row in con.execute('''SELECT DISTINCT j.source_id FROM field_queries q
+        JOIN acquisition_jobs j USING(job_id) WHERE j.source_id IS NOT NULL''').fetchall():
+        con.execute('INSERT OR REPLACE INTO source_lanes VALUES(?,?,?)',
+                    (row[0],'G0','P0 field-census bibliographic metadata; discovery guidance only'))
+    gate=gate_status(con,w.config)
+    if not gate['blocked']:
+        for q in gate['questions']:
+            if q['status'] in ('READY','SATURATED'):
+                queue_prior_art_leads(con,q['question_id'],w.config.get('field_census_surface_k',12))
+        # A metadata map is not the same as inspecting the surfaced scholarship.
+        # Attempt acquisition of the top prior-art leads before ordinary synthesis.
+        prior_pending=con.execute('''SELECT COUNT(DISTINCT j.job_id)
+            FROM acquisition_links l JOIN acquisition_jobs j USING(job_id)
+            WHERE l.relation='PRIOR_ART_LEAD'
+              AND (j.status='QUEUED' OR (j.status='FETCH_FAILED' AND j.attempts<3))''').fetchone()[0]
+        if prior_pending:
+            gate=dict(gate)
+            gate['blocked']=True
+            gate['stage']='PRIOR_ART_ACQUISITION'
+            gate['prior_art_pending']=prior_pending
+            gate['blocked_questions']=[q for q in gate['questions'] if q['status'] in ('READY','SATURATED')]
+    else:
+        gate['stage']='FIELD_CENSUS'
+    con.commit()
+    return gate
+
+
 def cycle(paths=None,budget=None):
     ariadne.ingest(paths or [])
     con = ariadne.connect()
     try:
         w = Warden(con,ariadne.ROOT)
         con.commit()
-        from ariadne_core.acquisition import acquire
-        acquire(con,ariadne.ROOT,budget=4)
+        gate=_prepare_field_census(con,w)
+        if gate['blocked']:
+            pending=con.execute("""SELECT COUNT(*) FROM acquisition_jobs
+                WHERE status='QUEUED' OR (status='FETCH_FAILED' AND attempts<3)""").fetchone()[0]
+            event(con,'P0_GATE_BLOCKED',gate.get('stage','FIELD_CENSUS'),{
+                'blocked_questions':gate.get('blocked_questions',[]),
+                'pending_acquisitions':pending,
+                'rule':'RESEARCH_THE_RESEARCH_BEFORE_ORIGINAL_ANALYSIS'})
+            con.commit()
+            result=dict(executed=0,pending=pending,revision='P0_'+gate.get('stage','FIELD_CENSUS'),p0=gate)
+            backup = snapshot(con,ariadne.ROOT)
+            print(json.dumps(dict(result,snapshot=str(backup))),flush=True)
+            return result
         result = w.run(budget)
+        result['p0']=gate
         con.commit()
         report = render(w)
         backup = snapshot(con,ariadne.ROOT)
@@ -128,6 +184,8 @@ def main(argv=None):
     p=sub.add_parser('recover');p.add_argument('snapshot');p.add_argument('target')
     p=sub.add_parser('constraints');p.add_argument('file')
     p=sub.add_parser('acquire');p.add_argument('manifest',help='Path to text containing URLs/DOIs')
+    p=sub.add_parser('question');p.add_argument('question');p.add_argument('--scope',default='');p.add_argument('--term',action='append',default=[])
+    p=sub.add_parser('field-map');p.add_argument('question_id',nargs='?')
     p=sub.add_parser('serve');p.add_argument('--port',type=int,default=8765);p.add_argument('--interval',type=float,default=10)
     args=parser.parse_args(argv)
     if args.command=='recover':
@@ -144,6 +202,9 @@ def main(argv=None):
         con=ariadne.connect()
         try:
             w=Warden(con,ariadne.ROOT)
+            from ariadne_core.field_census import install
+            from ariadne_core.history import install_history
+            install(con);install_history(con)
             rev=con.execute("SELECT value FROM pipeline_state WHERE key='revision'").fetchone()
             w.revision=rev[0] if rev else 'UNCOMPILED'
             if args.command=='init':
@@ -173,6 +234,15 @@ def main(argv=None):
                 from ariadne_core.acquisition import queue_manifest
                 count=queue_manifest(con,Path(args.manifest).read_text(encoding='utf-8'))
                 print(json.dumps({'queued_pointers':count}))
+            elif args.command=='question':
+                from ariadne_core.field_census import register_question,ensure_initial_queries
+                qid=register_question(con,args.question,args.scope,args.term)
+                queued=ensure_initial_queries(con,qid,w.config)
+                print(json.dumps({'question_id':qid,'field_queries_queued':queued}))
+            elif args.command=='field-map':
+                from ariadne_core.field_census import field_map
+                ids=[args.question_id] if args.question_id else [r[0] for r in con.execute('SELECT question_id FROM research_questions ORDER BY created_at')]
+                print(json.dumps([field_map(con,q,w.config.get('field_census_surface_k',12)) for q in ids],ensure_ascii=False,indent=2))
             con.commit()
         except BaseException:
             con.rollback();raise

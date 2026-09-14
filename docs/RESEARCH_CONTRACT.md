@@ -120,3 +120,99 @@ FEED MATERIAL
 LOOK AT FINDINGS
 TRACE WHY (when desired)
 ```
+
+## 16. Content identity, claim identity, and evidential authority are separate
+
+This is a permanent architectural invariant:
+
+```text
+CONTENT IDENTITY != CLAIM IDENTITY != EVIDENTIAL AUTHORITY
+```
+
+A content hash answers whether the same bytes or normalized object are already stored. A claim identity answers whether two records concern the same proposition, occurrence, reading, transform, or assertion. Evidential authority answers what a source may actually support, under which scope, provenance, and dependency conditions.
+
+No one of these may stand in for another. Duplicate content does not create a duplicate claim. A matching claim does not imply equal authority. A highly authoritative source for one scope may be inadmissible for another.
+
+## 17. Epistemic guidance is firewalled from evidence
+
+Research-history timelines, chats, design rationale, hypothesis histories, working correspondence tables, machine predictions, structural alignments, TOL predictions, checksum predictions, and field-census metadata are discovery guidance unless independently verified for the claim scope at issue.
+
+The governing path is:
+
+```text
+G0 DISCOVERY_GUIDANCE
+  -> QUESTION
+  -> SEARCH
+  -> E0 CANDIDATE SOURCE
+  -> VERIFICATION
+  -> E1 VERIFIED ADMISSIBLE EVIDENCE
+  -> DEPENDENCY / INDEPENDENCE ANALYSIS
+  -> E2 INDEPENDENTLY CORROBORATED EVIDENCE
+```
+
+A derivative of G0 remains G0. Internal repetition, summarization, extraction, graphing, or matrix generation cannot launder guidance into evidence or create independent corroboration.
+
+Guidance may change **where ARIADNE looks next**. It may not increase evidentiary confidence in the answer it expects to find.
+
+Promotion is never mutation: a G0 record remains G0 forever. Independently acquired and verified evidence is represented as a new E1/E2 record linked back through discovery provenance.
+
+See `docs/EPISTEMIC_FIREWALL.md` and `config/epistemic_policy.json`.
+
+## 18. Conversation progress is checkpointed every ten exchanges
+
+Global project rule `GPR-001` applies across The Great Work and its connected branches.
+
+After every:
+
+```text
+10 user inputs
++
+10 assistant outputs
+=
+20 conversation-visible messages
+```
+
+all project progress since the prior checkpoint must be pushed into ARIADNE as a G0 continuity artifact.
+
+The operator is not responsible for remembering, summarizing, classifying, or pushing the checkpoint. This is an assistant/system responsibility.
+
+A checkpoint must preserve new discoveries, source acquisitions, hypothesis changes, corrections, decisions, rules, transforms, torch changes, bright-red items, failures, residuals, repo/artifact changes, recontextualized old threads, unresolved questions, return triggers, and forward/recursive paths.
+
+Tool calls and hidden/system messages do not count toward the cadence. If exact counting becomes uncertain, checkpoint early rather than late.
+
+Checkpoint files live under `checkpoints/YYYY-MM-DD/` and remain permanently `G0 — DISCOVERY_GUIDANCE`.
+
+See `docs/GLOBAL_PROJECT_RULES.md`, `config/project_rules.json`, and `checkpoints/README.md`.
+
+## 19. Research the research before original deep-source synthesis
+
+Global project rule `GPR-003` is mandatory for every new major research question.
+
+ARIADNE first asks who has already pursued the idea, what fields and terminology contain it, what reviews and bibliographies map it, what canonical authors and sources recur, what competing explanations and failed approaches exist, and what unresolved boundary remains.
+
+The default order is:
+
+```text
+QUESTION
+-> FIELD CENSUS
+-> PRIOR ART
+-> VOCABULARY
+-> KNOWN RESULTS / KNOWN FAILURES
+-> SOURCE MAP
+-> ORIGINAL INVESTIGATION
+-> CONTRIBUTION DELTA
+```
+
+Original deep-source synthesis begins only after either a reasonable field map is established or a documented bounded search reaches saturation without applicable prior art.
+
+Bibliographic index results are G0 discovery metadata. A scholar's paper may be primary evidence that the scholar proposed a theory; it is not automatically primary evidence that the historical subject discussed in that paper intended the same theory.
+
+A failed search is retained as a negative search record. It is never upgraded directly into a novelty claim.
+
+Operating rule:
+
+```text
+Never rediscover manually what a field has already spent centuries organizing.
+```
+
+Use original effort where the field ends, disagrees, fragments, fails, or never connected the relevant pieces.

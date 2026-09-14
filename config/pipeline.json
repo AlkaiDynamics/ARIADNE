@@ -20,5 +20,16 @@
     "coverage_gap": 0.15,
     "yield": 0.1
   },
-  "multiscale_enabled": true
+  "multiscale_enabled": true,
+  "field_census_required": true,
+  "field_census_providers": [
+    "openalex",
+    "crossref",
+    "openlibrary"
+  ],
+  "field_census_min_providers": 2,
+  "field_census_rounds": 2,
+  "field_census_surface_k": 12,
+  "field_census_expansion_terms": 2,
+  "field_census_saturation_novelty": 0.25
 }

@@ -1,0 +1,99 @@
+{
+  "policy_version": "0.1",
+  "default_unknown_zone": "E0",
+  "zones": {
+    "G0": {
+      "name": "DISCOVERY_GUIDANCE",
+      "may_guide_search": true,
+      "may_support_research_claims": false,
+      "may_count_as_independent_corroboration": false,
+      "claim_support_weight": 0,
+      "derivative_inherits_zone": true
+    },
+    "E0": {
+      "name": "CANDIDATE_UNVERIFIED_SOURCE",
+      "may_guide_search": true,
+      "may_support_research_claims": false,
+      "may_count_as_independent_corroboration": false,
+      "claim_support_weight": 0,
+      "derivative_inherits_zone": false
+    },
+    "E1": {
+      "name": "VERIFIED_ADMISSIBLE_EVIDENCE",
+      "may_guide_search": true,
+      "may_support_research_claims": true,
+      "may_count_as_independent_corroboration": false,
+      "claim_support_weight": 1,
+      "requires": [
+        "independently_acquired_source",
+        "verification_event",
+        "source_locator",
+        "admissibility_scope"
+      ]
+    },
+    "E2": {
+      "name": "INDEPENDENTLY_CORROBORATED_EVIDENCE",
+      "may_guide_search": true,
+      "may_support_research_claims": true,
+      "may_count_as_independent_corroboration": true,
+      "claim_support_weight": 1,
+      "requires": [
+        "all_E1_requirements",
+        "dependency_analysis",
+        "independence_result"
+      ]
+    }
+  },
+  "non_evidentiary_provenance_classes": [
+    "DISCOVERY_GUIDANCE",
+    "CHAT_PROVENANCE",
+    "DESIGN_RATIONALE",
+    "HYPOTHESIS_HISTORY",
+    "RECONSTRUCTED_TIMELINE",
+    "USER_HYPOTHESIS",
+    "MACHINE_PREDICTION",
+    "STRUCTURAL_ALIGNMENT",
+    "TOL_PREDICTION",
+    "CHECKSUM_PREDICTION"
+  ],
+  "guidance_allowed_edges": [
+    "GUIDES_TO",
+    "DISCOVERED_VIA",
+    "TESTS",
+    "CONTRADICTS_GUIDANCE"
+  ],
+  "evidence_edges": [
+    "VERIFIED_AS",
+    "SUPPORTS",
+    "CORROBORATES"
+  ],
+  "hard_rules": {
+    "G0_may_create_evidence_edges": false,
+    "G0_derivatives_inherit_G0": true,
+    "E0_may_support_research_claims": false,
+    "promotion_mutates_source_record": false,
+    "internal_repetition_counts_as_corroboration": false,
+    "guidance_changes_search_priority_only": true,
+    "unknown_never_defaults_to_E1": true
+  },
+  "research_timeline": {
+    "path": "seed/AYLI_to_ARIADNE_Research_Timeline_v0.1.md",
+    "zone": "G0",
+    "class": "DISCOVERY_GUIDANCE",
+    "admissible_for": [
+      "RESEARCH_HISTORY",
+      "DESIGN_RATIONALE",
+      "DECISION_PROVENANCE",
+      "HYPOTHESIS_PROVENANCE",
+      "CORRECTION_HISTORY"
+    ],
+    "inadmissible_for": [
+      "HISTORICAL_CLAIM_SUPPORT",
+      "TEXTUAL_CLAIM_SUPPORT",
+      "SCIENTIFIC_CLAIM_SUPPORT",
+      "EMPIRICAL_VALIDATION",
+      "INDEPENDENT_CORROBORATION",
+      "CROSS_TRADITION_CONVERGENCE_COUNT"
+    ]
+  }
+}
