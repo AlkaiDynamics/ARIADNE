@@ -309,6 +309,7 @@ class PipelineTests(unittest.TestCase):
         from ariadne_core.dashboard import progress_summary
         path=self.root/'inbox'/'scan.bin';path.write_bytes(b'\x00\x01')
         ariadne.register_source(path)
+        self.compile()  # Diagnostic gap passages must not count as indexed source text.
         p=progress_summary(self.con)
         self.assertEqual(1,p['sources']);self.assertEqual(0,p['indexed'])
         self.assertEqual(1,p['extraction_gaps'])
@@ -327,6 +328,72 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(1,p['linked']);self.assertEqual(1,p['findings'])
         self.assertGreater(self.con.execute('SELECT COUNT(*) FROM graph_edges').fetchone()[0],0)
         self.assertTrue(verify_history(self.con));self.assertTrue(verify_events(self.con))
+
+
+    def test_optional_lens_off_preserves_baseline_findings_and_connections(self):
+        self.add('a.txt','72 -> 70 + 2');self.add('b.txt','36 -> 35 + 1')
+        self.w=Warden(self.con,self.root,dict(multiscale_enabled=False))
+        self.compile()
+        baseline_findings={r[0] for r in self.con.execute('SELECT finding_id FROM active_findings')}
+        baseline_proposals={r[0] for r in self.con.execute('SELECT proposal_id FROM proposals')}
+        baseline_hits={r['passage_id'] for r in self.w.search('72')[0]}
+        self.assertTrue(baseline_proposals)
+        self.assertEqual(0,self.con.execute('SELECT COUNT(*) FROM scale_patterns').fetchone()[0])
+        self.w=Warden(self.con,self.root,dict(multiscale_enabled=True));self.compile()
+        self.assertEqual(baseline_findings,{r[0] for r in self.con.execute('SELECT finding_id FROM active_findings')})
+        self.assertEqual(baseline_proposals,{r[0] for r in self.con.execute('SELECT proposal_id FROM proposals')})
+        self.assertEqual(baseline_hits,{r['passage_id'] for r in self.w.search('72')[0]})
+        self.assertGreater(self.con.execute('SELECT COUNT(*) FROM scale_patterns').fetchone()[0],0)
+
+    def test_failed_optional_lens_rolls_back_its_writes_and_keeps_baseline(self):
+        self.add('a.txt','72 -> 70 + 2');self.add('b.txt','36 -> 35 + 1')
+        def broken(warden):
+            warden.edge('failed-lens','partial-output','SCALE_MEMBER',{})
+            raise ValueError('synthetic lens failure')
+        with patch('ariadne_core.fractal.multiscale',side_effect=broken):
+            result=self.w.run(1);self.con.commit()
+        self.assertEqual(1,result['executed'])
+        self.assertGreater(self.con.execute('SELECT COUNT(*) FROM proposals').fetchone()[0],0)
+        self.assertEqual(0,self.con.execute("SELECT COUNT(*) FROM graph_edges WHERE src='failed-lens'").fetchone()[0])
+        self.assertEqual('FAILED',self.con.execute('SELECT status FROM lens_runs').fetchone()[0])
+        self.assertTrue(verify_history(self.con));self.assertTrue(verify_events(self.con))
+
+    def test_lens_runs_are_versioned_idempotent_and_immutable(self):
+        self.add('a.txt','72 -> 70 + 2');self.compile();self.compile()
+        self.assertEqual(1,self.con.execute('SELECT COUNT(*) FROM lens_runs').fetchone()[0])
+        old_head=self.con.execute('SELECT MAX(revision) FROM state_versions').fetchone()[0]
+        self.w=Warden(self.con,self.root,dict(multiscale_enabled=False));self.compile()
+        self.assertEqual({'COMPLETED','DISABLED'},{r[0] for r in self.con.execute('SELECT status FROM lens_runs')})
+        self.assertEqual(1,len(state_at(self.con,old_head)['lens_runs']))
+        with self.assertRaises(sqlite3.IntegrityError):
+            self.con.execute("UPDATE lens_runs SET status='COMPLETED'")
+        self.con.rollback()
+        self.assertTrue(verify_history(self.con))
+
+    def test_changed_assessment_config_retains_both_connection_assessments(self):
+        self.add('a.txt','72 -> 70 + 2');self.add('b.txt','12 -> 10 + 2')
+        self.w=Warden(self.con,self.root,dict(near_duplicate_threshold=1.0));self.compile()
+        old=[dict(r) for r in self.con.execute('SELECT * FROM challenges')]
+        self.assertEqual('UNRESOLVED',old[0]['verdict'])
+        self.w=Warden(self.con,self.root,dict(near_duplicate_threshold=0.0));self.compile()
+        rows=[dict(r) for r in self.con.execute('SELECT * FROM challenges')]
+        self.assertEqual(2,len(rows));self.assertIn(old[0],rows)
+        self.assertEqual({'UNRESOLVED','FAILED_CONTROL'},{r['verdict'] for r in rows})
+        self.assertEqual(2,len({json.loads(r['checks'])['assessment_config'] for r in rows}))
+        self.assertEqual(1,self.con.execute('SELECT COUNT(*) FROM proposals').fetchone()[0])
+
+    def test_watch_restart_resumes_and_processes_new_material(self):
+        from warden import watch
+        self.con.commit();self.add('a.txt','72 -> 70 + 2')
+        with contextlib.redirect_stdout(io.StringIO()):
+            watch(interval=.001,budget=100,cycles=3)
+        before=self.con.execute('SELECT COUNT(*) FROM query_runs').fetchone()[0]
+        self.add('b.txt','12 -> 10 + 2')
+        with contextlib.redirect_stdout(io.StringIO()):
+            watch(interval=.001,budget=100,cycles=3)
+        self.assertGreater(self.con.execute('SELECT COUNT(*) FROM query_runs').fetchone()[0],before)
+        self.assertEqual(2,self.con.execute('SELECT COUNT(*) FROM source_profiles').fetchone()[0])
+        self.assertTrue(verify_history(self.con))
 
 
 class AlgorithmTests(unittest.TestCase):

@@ -217,6 +217,20 @@ not permanent retention. `artifacts/latest_report.html` shows K and N explicitly
 with full exports and all breadcrumbs. `artifacts/neurite_notes.md` can be pasted
 into Neurite's default Zettelkasten format.
 
+## Optional attention lenses
+
+Musical/TOL and fractal patterns are provisional ways to choose where to look.
+They are not global truth gates. The local scalar arithmetic check does not
+validate or invalidate the full research framework.
+
+The installed Neurite-inspired pass can be disabled with
+`"multiscale_enabled": false` in `config/pipeline.json`. Lens runs are immutable,
+versioned records; a failed pass rolls back its partial output while ordinary
+acquisition, findings, and connection checks continue. Past results remain
+available. Musical/TOL and SBEB execution remain future adapters.
+
+See [published progress](docs/PROGRESS.md) for implementation and validation scope.
+
 ## Boundaries of this build
 
 - Current retrieval is local to acquired/ingested material. Public URL acquisition

@@ -18,7 +18,7 @@ DIRECTIONS = ('DOWN', 'SIDEWAYS', 'ORTHOGONAL', 'UP')
 DEFAULTS = dict(query_budget=40, max_depth=3, retrieval_limit=30, candidate_limit=400,
                 display_limit=40, stale_rounds=2, novelty_floor=.05,
                 near_duplicate_threshold=.85, exploration_weight=.3, diversity_weight=.2,
-                protected_torches=['TORCH-JUDAH'], aliases={},
+                protected_torches=['TORCH-JUDAH'], aliases={}, multiscale_enabled=True,
                 weights=dict(novelty=.25, diagnostic=.3, torch=.2, coverage_gap=.15, yield_=.1))
 
 
@@ -40,6 +40,8 @@ class Warden:
             raise ValueError('aliases must map strings to lists of strings')
         if any(not isinstance(v,(float,int)) or not math.isfinite(v) or v < 0 for v in self.config['weights'].values()):
             raise ValueError('weights must be finite and nonnegative')
+        if type(self.config['multiscale_enabled']) is not bool:
+            raise ValueError('multiscale_enabled must be a boolean')
         migrate(con)
         self.config_hash = identity('CFG', self.config)
         implementation_root = Path(__file__).resolve().parent.parent
@@ -141,8 +143,8 @@ class Warden:
         self.reconnect()
         for row in self.con.execute('SELECT finding_id FROM discovery_findings ORDER BY finding_id').fetchall():
             self.spawn(row[0])
-        from .fractal import multiscale
-        multiscale(self)
+        from .lenses import run_multiscale
+        run_multiscale(self)
         return compiled
 
     def match_torches(self):
@@ -184,6 +186,7 @@ class Warden:
             cur = self.con.execute('INSERT OR IGNORE INTO proposals VALUES(?,?,?,?,?,?,?)',
                 (pid,left['finding_id'],right['finding_id'],kind,encoded(data),'MACHINE_PREDICTION',VERSION))
             if not cur.rowcount:
+                self.kitchen(pid)
                 continue
             self.edge(left['finding_id'],right['finding_id'],kind,{'proposal':pid})
             if left['kind'] == 'PARTITION' and a.get('arithmetic_valid') and b.get('arithmetic_valid'):
@@ -208,7 +211,7 @@ class Warden:
         if a['family'] and b['family']:
             independence = 'FAIL_SHARED_FAMILY' if a['family'] == b['family'] else 'DISTINCT_DECLARED_FAMILIES'
         arithmetic = 'FAIL' if any(x.get('arithmetic_valid') is False for x in (da,db)) else 'PASS' if all(x.get('arithmetic_valid') is True for x in (da,db)) else 'NOT_APPLICABLE'
-        checks = {'arithmetic':arithmetic,'source_independence':independence,
+        checks = {'assessment_config':self.config_hash,'assessment_implementation':self.implementation_id,'arithmetic':arithmetic,'source_independence':independence,
                   'near_duplicate':similarity >= self.config['near_duplicate_threshold'],
                   'text_jaccard':round(similarity,6),'negative_control':'UNKNOWN_NO_LABELLED_CONTROL',
                   'null_model':'UNKNOWN_NO_SAMPLING_MODEL','historical_plausibility':'UNKNOWN',
@@ -216,8 +219,9 @@ class Warden:
                   'interpretation':'challenge results do not certify historical truth'}
         verdict = 'FAILED_CONTROL' if arithmetic == 'FAIL' or independence == 'FAIL_SHARED_FAMILY' or checks['near_duplicate'] else 'UNRESOLVED'
         cid = identity('CHECK',pid,checks,VERSION)
-        self.con.execute('INSERT OR IGNORE INTO challenges VALUES(?,?,?,?,?)',(cid,pid,encoded(checks),verdict,VERSION))
-        event(self.con,'KITCHEN',pid,{'checks':checks,'verdict':verdict})
+        cur = self.con.execute('INSERT OR IGNORE INTO challenges VALUES(?,?,?,?,?)',(cid,pid,encoded(checks),verdict,VERSION))
+        if cur.rowcount:
+            event(self.con,'KITCHEN',pid,{'checks':checks,'verdict':verdict})
         return checks
 
     def spawn(self, fid, parent='', depth=0):

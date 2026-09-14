@@ -26,6 +26,16 @@ CREATE TRIGGER IF NOT EXISTS immutable_pipeline_delete BEFORE DELETE ON pipeline
 CREATE TABLE IF NOT EXISTS pipeline_state (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS implementation_versions (
  implementation_id TEXT PRIMARY KEY, files_json TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS lens_runs (
+ run_id TEXT PRIMARY KEY, lens TEXT NOT NULL, implementation_id TEXT NOT NULL,
+ corpus_revision TEXT NOT NULL, config_hash TEXT NOT NULL,
+ input_state_revision INTEGER NOT NULL, parameters TEXT NOT NULL,
+ status TEXT NOT NULL CHECK(status IN ('COMPLETED','DISABLED','FAILED')),
+ detail TEXT NOT NULL);
+CREATE TRIGGER IF NOT EXISTS lens_runs_no_update BEFORE UPDATE ON lens_runs
+ BEGIN SELECT RAISE(ABORT,'lens runs are append-only'); END;
+CREATE TRIGGER IF NOT EXISTS lens_runs_no_delete BEFORE DELETE ON lens_runs
+ BEGIN SELECT RAISE(ABORT,'lens runs are append-only'); END;
 CREATE TABLE IF NOT EXISTS scale_patterns (
  pattern_id TEXT PRIMARY KEY, level INTEGER NOT NULL, signature TEXT NOT NULL,
  members TEXT NOT NULL, source_count INTEGER NOT NULL, interpretation TEXT NOT NULL);

@@ -21,7 +21,7 @@ def progress_summary(con):
     counts = {r[0]: r[1] for r in con.execute(
         'SELECT status,COUNT(*) FROM acquisition_jobs GROUP BY status')}
     sources = con.execute('SELECT COUNT(*) FROM sources').fetchone()[0]
-    indexed = con.execute('SELECT COUNT(DISTINCT source_id) FROM passages').fetchone()[0]
+    indexed = con.execute('SELECT COUNT(DISTINCT p.source_id) FROM passages p JOIN sources s USING(source_id) WHERE s.text_extracted=1').fetchone()[0]
     gaps = con.execute('SELECT COUNT(*) FROM sources WHERE text_extracted=0').fetchone()[0]
     pending = con.execute("""SELECT COUNT(*) FROM acquisition_jobs
         WHERE status='QUEUED' OR (status='FETCH_FAILED' AND attempts<3)""").fetchone()[0]
@@ -46,7 +46,7 @@ def progress_summary(con):
                          reason=detail.get('error') or detail.get('reason') or '',
                          retrying=r['status']=='FETCH_FAILED' and r['attempts']<3))
     recent = [dict(r) for r in con.execute("""SELECT s.original_name,s.text_extracted,
-        s.source_id,EXISTS(SELECT 1 FROM passages p WHERE p.source_id=s.source_id) AS indexed
+        s.source_id,(s.text_extracted=1 AND EXISTS(SELECT 1 FROM passages p WHERE p.source_id=s.source_id)) AS indexed
         FROM sources s ORDER BY s.created_at DESC,s.rowid DESC LIMIT 8""")]
     return dict(sources=sources, indexed=indexed, extraction_gaps=gaps,
                 queued=pending, attention_jobs=attention_jobs,

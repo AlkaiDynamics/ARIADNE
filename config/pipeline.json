@@ -9,7 +9,9 @@
   "near_duplicate_threshold": 0.85,
   "exploration_weight": 0.3,
   "diversity_weight": 0.2,
-  "protected_torches": ["TORCH-JUDAH"],
+  "protected_torches": [
+    "TORCH-JUDAH"
+  ],
   "aliases": {},
   "weights": {
     "novelty": 0.25,
@@ -17,5 +19,6 @@
     "torch": 0.2,
     "coverage_gap": 0.15,
     "yield": 0.1
-  }
+  },
+  "multiscale_enabled": true
 }

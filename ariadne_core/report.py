@@ -18,6 +18,7 @@ def render(warden):
     findings = con.execute("SELECT f.finding_id,f.kind,f.cell,f.data,p.source_id,p.locator,COALESCE(l.lane,'E0') lane FROM discovery_findings f JOIN passages p USING(passage_id) LEFT JOIN source_lanes l USING(source_id) ORDER BY f.finding_id").fetchall()
     historical=con.execute('SELECT finding_id,kind,version,data FROM findings WHERE finding_id NOT IN (SELECT finding_id FROM discovery_findings) ORDER BY finding_id').fetchall()
     challenges = con.execute('SELECT c.proposal_id,c.verdict,c.checks FROM challenges c JOIN proposals p USING(proposal_id) JOIN active_findings a ON p.left_id=a.finding_id JOIN active_findings b ON p.right_id=b.finding_id ORDER BY c.proposal_id').fetchall()
+    lens_runs = con.execute('SELECT run_id,lens,corpus_revision,status,parameters,detail FROM lens_runs ORDER BY rowid DESC').fetchall()
     profiles = con.execute('SELECT source_id,family,tradition,language,witness_class FROM source_profiles ORDER BY source_id').fetchall()
     scales = con.execute('SELECT level,signature,source_count,members,interpretation FROM scale_patterns ORDER BY level,pattern_id').fetchall()
     traces = con.execute('SELECT branch_id,finding_id,parent_id FROM branch_origins ORDER BY branch_id,finding_id,parent_id').fetchall()
@@ -33,7 +34,8 @@ def render(warden):
     page += f'<p>State revision {head} · Corpus {esc(getattr(warden,"revision","not compiled"))} · {len(findings)} findings · {len(all_branches)} retained branches</p>'
     page += f'<h2>Where to look next</h2><p>Showing K={min(k,len(all_branches))} of N={len(all_branches)}. All other branches remain below and in the JSON export.</p>'+queue(all_branches[:k])
     page += '<details><summary>Show all retained branches</summary>'+queue(all_branches)+'</details>'
-    page += '<h2>Kitchen: connections under challenge</h2>'+table(['Proposal','Verdict','Checks'],challenges)
+    page += '<h2>Kitchen: versioned connection assessments</h2><p>Earlier assessments remain alongside revised criteria; inspect assessment_config in each record.</p>'+table(['Proposal','Verdict','Versioned checks'],challenges)
+    page += '<details><summary>Optional attention lenses: versioned runs</summary><p>Search cues only. Disabled or failed lenses do not veto ordinary findings. Historical runs are retained.</p>'+table(['Run','Lens','Corpus revision','Status','Parameters','Detail'],lens_runs)+'</details>'
     page += '<h2>Multiscale discovery</h2><p>Exact → proportional → operator family → graph neighborhood. Recurrence is a search cue, not a fractal or historical proof.</p>'+table(['Scale','Signature','Sources','Members','Status'],scales)
     page += '<h2>Current evidence and guidance records</h2>'+table(['Finding','Kind','Cell','Typed fields','Source','Location','Lane'],findings)
     page += f'<details><summary>Superseded extraction versions: {len(historical)} retained</summary>'+table(['Finding','Kind','Implementation','Fields'],historical)+'</details>'
@@ -44,7 +46,7 @@ def render(warden):
     path = directory/'latest_report.html'
     temporary = path.with_suffix('.tmp');temporary.write_text(page,encoding='utf-8');temporary.replace(path)
     export = dict(state_revision=head,branches=all_branches,findings=[dict(r) for r in findings],
-                  challenges=[dict(r) for r in challenges],scale_patterns=[dict(r) for r in scales],return_paths=[dict(r) for r in traces])
+                  challenges=[dict(r) for r in challenges],lens_runs=[dict(r) for r in lens_runs],scale_patterns=[dict(r) for r in scales],return_paths=[dict(r) for r in traces])
     (directory/'pipeline_state.json').write_text(encoded(export),encoding='utf-8')
     from .fractal import export_neurite
     export_neurite(con,directory/'neurite_notes.md')

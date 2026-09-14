@@ -8,8 +8,8 @@ Run the following command, then open http://127.0.0.1:8765.
 python warden.py serve
 ~~~
 
-Windows users can run OPEN_ARIADNE.bat. These commands require the
-codex/algorithm-warden branch until its draft PR is merged.
+Windows users can run OPEN_ARIADNE.bat. Use the current main branch after
+PR #3 is merged; stop and restart ARIADNE when upgrading its code.
 
 Do your research in whichever browser tools you prefer. Then:
 
@@ -87,7 +87,25 @@ projection and does not generate a new history version merely because it is poll
   Drop/export/paste is the current handoff.
 - No agents, model inference, API keys, or neural packages are used.
 
-## Decision: musical equation and TOL as an optional grammar
+## Decision: optional lenses, no global theory gate
+
+The musical equation, TOL, and fractal methods are independent, provisional
+attention lenses. They can suggest questions, comparisons, and return paths.
+A mismatch with one lens cannot veto an otherwise supported connection, erase
+an alternative, or invalidate the overarching framework. Their completeness and
+usefulness remain open research questions. The scalar calculation below tests
+one deliberately restricted mathematical projection; it is not a global
+validation or refutation of the user's theory.
+
+The current Neurite-inspired lens is optional: set multiscale_enabled to false
+in config/pipeline.json to bypass it. Existing results remain preserved.
+Its runs record implementation, corpus revision, parameters, input state
+revision, and COMPLETED/DISABLED/FAILED status in an immutable lens ledger.
+A failed pass rolls back its partial writes and leaves baseline discovery intact.
+The detailed report and JSON export expose those records. Musical/TOL and SBEB
+remain proposed lenses and are not falsely presented as installed algorithms.
+
+## Local mathematical check: the two scalar operations
 
 The supplied scalar operations are R(x)=2x/3 and L(x)=3x/4. They commute:
 R(L(x))=L(R(x))=x/2. This makes an exact operator-algebra test possible.
