@@ -1,0 +1,49 @@
+distribution_id: ALKAI-GREAT-WORK
+distribution_kind: DOWNSTREAM_FEDERATION
+repository: AlkaiDynamics/ARIADNE
+
+upstream:
+  repository: zhenrez/ARIADNE
+  pinned_commit: 709f8e7d38a98761c6442cce83663ecaa35b3285
+  sync_policy: EXPLICIT_PINNED_UPGRADE
+  auto_rebase: false
+
+identity_rules:
+  git_repository_fork_is_not_ariadne_project_fork: true
+  git_branch_is_not_ariadne_project_fork: true
+  project_fork_identity_is_repo_independent: true
+
+upstream_owned:
+  - ariadne_core/
+  - ariadne.py
+  - warden.py
+  - generic schemas and epistemic contracts
+  - generic tests and synthetic fixtures
+  - generic P0 / prior-art mechanisms
+  - generic FORK / handoff / validation-regime mechanisms
+
+downstream_owned:
+  - profiles/great-work/
+  - federation/
+  - research-state/
+  - checkpoints/
+  - Great Work policy instances
+  - active project research questions
+  - project torches
+  - project adapters and extensions
+
+legacy_downstream_state_currently_in_upstream_paths:
+  - config/research_questions.json
+  - config/torches.json
+  - checkpoints/
+  - seed/AYLI_to_ARIADNE_Research_Timeline_v0.1.md
+  - docs/GLOBAL_PROJECT_RULES.md
+
+migration_policy:
+  preserve_before_relocate: true
+  no_runtime_path_moves_until_adapter_support_exists: true
+  verify_before_upstream_purification: true
+  research_data_never_flows_upstream_implicitly: true
+  genericizable_features_return_upstream_by_explicit_proposal: true
+
+status: BOOTSTRAPPING
