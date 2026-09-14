@@ -30,17 +30,21 @@ policy:
   research_data_flows_upstream_automatically: false
   generic_features_return_upstream_by_proposal: true
   upstream_upgrade_requires_explicit_pin: true
+  project_registry_is_open_world: true
+  unresolved_project_classification_is_allowed: true
 
-projects:
-  - AYLI
-  - SUN
-  - SATURN
-  - SOPHIA
-  - ARGO_LIFELINE
-  - HARMONIA_OCCULTA
-  - ROSETTAS
+project_registry:
+  path: federation/projects/registry.yaml
+  completeness: OPEN_WORLD
+  rule: "Do not infer that unlisted projects do not exist. Inventory first; classify only when the handling decision is actually made."
+
+registered_project_manifests:
+  - federation/projects/ayli/project.yaml
+  - federation/projects/sun/project.yaml
+  - federation/projects/saturn/project.yaml
 
 notes:
   - "Canonical ARIADNE owns reusable mechanism and specification."
   - "This distribution owns Great Work policy, state, fork instances, checkpoints, torches, and adapters."
   - "Project meaning remains project-owned; ARIADNE owns relationships between project states."
+  - "BEANS, MARC-1/M1, ARGO, SHARER, MorphIQ, QuestN/Q10, HQ/Neurite, McDuck, WAUSAUKEE and other known lines are retained in the registry without forcing a premature project/fork/subsystem classification."
