@@ -331,7 +331,7 @@ class PipelineTests(unittest.TestCase):
 
 
     def test_optional_lens_off_preserves_baseline_findings_and_connections(self):
-        self.add('a.txt','72 -> 70 + 2');self.add('b.txt','36 -> 35 + 1')
+        self.add('a.txt','72 -> 70 + 2');self.add('b.txt','36 -> 35 + 1');self.add('c.txt','12 -> 10 + 2')
         self.w=Warden(self.con,self.root,dict(multiscale_enabled=False))
         self.compile()
         baseline_findings={r[0] for r in self.con.execute('SELECT finding_id FROM active_findings')}
@@ -346,7 +346,7 @@ class PipelineTests(unittest.TestCase):
         self.assertGreater(self.con.execute('SELECT COUNT(*) FROM scale_patterns').fetchone()[0],0)
 
     def test_failed_optional_lens_rolls_back_its_writes_and_keeps_baseline(self):
-        self.add('a.txt','72 -> 70 + 2');self.add('b.txt','36 -> 35 + 1')
+        self.add('a.txt','72 -> 70 + 2');self.add('b.txt','36 -> 35 + 1');self.add('c.txt','12 -> 10 + 2')
         def broken(warden):
             warden.edge('failed-lens','partial-output','SCALE_MEMBER',{})
             raise ValueError('synthetic lens failure')
