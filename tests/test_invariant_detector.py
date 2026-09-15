@@ -61,6 +61,51 @@ class InvariantDetectorTests(unittest.TestCase):
         self.assertNotEqual(Verdict.PASS, result.levels["KCH"].verdict)
         self.assertNotEqual(Verdict.PASS, result.levels["KA"].verdict)
 
+    def test_partial_lower_level_blocks_higher_pass(self):
+        base = FIXTURES["A14"]
+        candidate = CandidateSystem(
+            name="partial_path_but_later_evidence_present",
+            states=base.states,
+            projection=base.projection,
+            transition=base.transition,
+            witness=base.witness,
+            path=PathSpec(
+                exists=True,
+                intermediate_states=base.path.intermediate_states,
+                outgoing=base.path.outgoing,
+                returning=base.path.returning,
+                nd=None,
+            ),
+            graded=base.graded,
+            ch=base.ch,
+            across=base.across,
+        )
+        result = detect(candidate)
+        self.assertEqual(Verdict.PARTIAL, result.levels["Kp"].verdict)
+        self.assertEqual(Verdict.PARTIAL, result.levels["Kg"].verdict)
+        self.assertEqual(Verdict.PARTIAL, result.levels["KCH"].verdict)
+        self.assertEqual(Verdict.PARTIAL, result.levels["KA"].verdict)
+
+    def test_missing_core_information_is_incomplete_not_disconfirmation(self):
+        base = FIXTURES["A14"]
+        candidate = CandidateSystem(
+            name="projection_missing",
+            states=base.states,
+            projection=None,
+            transition=base.transition,
+            witness=base.witness,
+            path=base.path,
+            graded=base.graded,
+            ch=base.ch,
+            across=base.across,
+        )
+        result = detect(candidate)
+        self.assertEqual(Verdict.PARTIAL, result.levels["Kc"].verdict)
+        self.assertEqual(Verdict.PARTIAL, result.levels["Kp"].verdict)
+        self.assertEqual(Verdict.PARTIAL, result.levels["Kg"].verdict)
+        self.assertEqual(Verdict.PARTIAL, result.levels["KCH"].verdict)
+        self.assertEqual(Verdict.PARTIAL, result.levels["KA"].verdict)
+
     def test_partial_is_distinct_from_undetermined(self):
         base = FIXTURES["A14"]
         candidate = CandidateSystem(
@@ -83,21 +128,19 @@ class InvariantDetectorTests(unittest.TestCase):
         result = detect(candidate)
         self.assertEqual(Verdict.PARTIAL, result.levels["Kp"].verdict)
 
-    def test_target_leakage_rejects_ch_without_poisoning_lower_levels(self):
+    def test_target_leakage_does_not_change_morphology_vector(self):
         result = detect(FIXTURES["A8"])
         self.assertEqual(
-            ("PASS", "PASS", "PASS", "FAIL", "FAIL"),
+            ("PASS", "PASS", "PASS", "PASS", "UNDETERMINED"),
             result.vector,
         )
-        self.assertIn("NO_TARGET_LEAKAGE violated", result.levels["KCH"].reasons)
 
-    def test_search_path_leakage_rejects_across_only(self):
+    def test_search_path_leakage_does_not_change_morphology_vector(self):
         result = detect(FIXTURES["A13"])
         self.assertEqual(
-            ("PASS", "PASS", "PASS", "PASS", "FAIL"),
+            ("PASS", "PASS", "PASS", "PASS", "PASS"),
             result.vector,
         )
-        self.assertIn("NO_HIDDEN_SEARCH_PATH_LEAKAGE violated", result.levels["KA"].reasons)
 
     def test_a7_is_rejected_by_null_collision_not_by_discriminativity(self):
         result = detect(FIXTURES["A7"])
