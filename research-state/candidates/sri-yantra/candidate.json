@@ -1,0 +1,41 @@
+{
+  "candidate_id": "SRI_YANTRA_APOLLONIUS",
+  "protocol_version": "0.0",
+  "status": "QUARANTINED_POST_GATE",
+  "keystone_execution": false,
+  "training_or_example_domain": false,
+  "admissible_as_K_evidence": false,
+  "prerequisites": [
+    "PHASE1_KEYSTONE_FROZEN",
+    "BLIND_DOMAIN_PROTOCOL_FROZEN"
+  ],
+  "execution_order": [
+    "PHASE1_KEYSTONE_FREEZE",
+    "BLIND_DOMAIN_PROTOCOL_FREEZE",
+    "SY_ADMISSIBILITY_RECONSTRUCTION",
+    "STRICT_FIBER_CARDINALITY",
+    "SELECTOR_CONTINUITY_GLOBAL_SECTION",
+    "STRICT_FIBER_MONODROMY_IF_WARRANTED"
+  ],
+  "first_allowed_computations": [
+    "STRICT_FIBER_CARDINALITY",
+    "SELECTOR_CONTINUITY_GLOBAL_SECTION"
+  ],
+  "mathematical_objects": {
+    "ambient_cover": "M_TILDE_CLP",
+    "extended_family": "S_EXT",
+    "strict_family": "S_SY",
+    "strict_projection": "PI_SY:S_SY_REG->P_SY_REG"
+  },
+  "monodromy": {
+    "ambient_clp_creditable": false,
+    "strict_fiber_monodromy_gate": "STRICT_FIBER_REMAINS_MULTIVALUED_OR_GLOBAL_SECTION_FAILS_NONTRIVIALLY",
+    "stopping_rule": "UNIQUE_CONTINUOUS_GLOBAL_SELECTOR_TERMINATES_MONODROMY_ROUTE_AS_NEGATIVE_RESULT"
+  },
+  "credit_rules": [
+    "AMBIENT_CLP_MONODROMY_DOES_NOT_COUNT_AS_STRICT_SY_EVIDENCE",
+    "EXTENDED_GEOMETRIC_INTERPRETABILITY_DOES_NOT_IMPLY_STRICT_SY_ADMISSIBILITY",
+    "STRICT_SY_RESULTS_DO_NOT_ENTER_KEYSTONE_BEFORE_ALL_PREREQUISITES_ARE_SATISFIED"
+  ],
+  "notes": "Frozen downstream research-state contract only. This file does not authorize any real-domain KEYSTONE execution."
+}
