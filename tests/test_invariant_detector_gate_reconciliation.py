@@ -1,53 +1,42 @@
 import unittest
 from dataclasses import replace
 
-from ariadne_core.invariant_detector import CandidateSystem, PathSpec, Provenance, Verdict, detect
-from ariadne_core.invariant_fixtures import FIXTURES
+from ariadne_core.invariant_detector_v2 import Verdict, detect
+from ariadne_core.invariant_fixtures_v2 import FIXTURES
 
 
 class RevisedPhase1GateRegressionTests(unittest.TestCase):
-    """RED tests for the post-6fbf648 Phase-1 gate reconciliation.
+    """Regression checks for the post-6fbf648 Phase-1 gate."""
 
-    These tests intentionally target the old implementation first. They encode
-    the revised gate without introducing real-domain material or new theory.
-    """
+    def test_target_leakage_is_integrity_not_morphology(self):
+        leaked = detect(FIXTURES["A8"])
+        clean = detect(FIXTURES["A9"])
+        self.assertEqual(clean.vector, leaked.vector)
+        self.assertEqual(Verdict.FAIL, leaked.integrity.overall)
 
-    def test_target_leakage_does_not_change_morphology_vector(self):
-        leaked = FIXTURES["A8"]
-        clean = replace(leaked, provenance={})
-        self.assertEqual(detect(clean).vector, detect(leaked).vector)
-
-    def test_search_path_leakage_does_not_change_morphology_vector(self):
-        leaked = FIXTURES["A13"]
-        clean = replace(leaked, provenance={})
-        self.assertEqual(detect(clean).vector, detect(leaked).vector)
+    def test_search_path_leakage_is_integrity_not_morphology(self):
+        leaked = detect(FIXTURES["A13"])
+        clean = detect(FIXTURES["A14"])
+        self.assertEqual(clean.vector, leaked.vector)
+        self.assertEqual(Verdict.FAIL, leaked.integrity.overall)
 
     def test_partial_prerequisite_blocks_higher_pass(self):
         base = FIXTURES["A14"]
-        candidate = replace(base, path=replace(base.path, nd=None))
-        result = detect(candidate)
+        result = detect(replace(base, path=replace(base.path, nd_policy=None)))
         self.assertEqual(Verdict.PARTIAL, result.levels["Kp"].verdict)
-        self.assertNotEqual(Verdict.PASS, result.levels["Kg"].verdict)
-        self.assertNotEqual(Verdict.PASS, result.levels["KCH"].verdict)
-        self.assertNotEqual(Verdict.PASS, result.levels["KA"].verdict)
+        for level in ("Kg", "KCH", "KA"):
+            self.assertEqual(Verdict.PASS, result.levels[level].independent_verdict)
+            self.assertEqual(Verdict.PARTIAL, result.levels[level].verdict)
 
     def test_missing_projection_is_incomplete_not_disconfirmed(self):
         base = FIXTURES["A14"]
-        candidate = replace(base, projection=None)
-        result = detect(candidate)
-        self.assertNotEqual(Verdict.FAIL, result.levels["Kc"].verdict)
+        result = detect(replace(base, projection=None))
+        self.assertEqual(Verdict.PARTIAL, result.levels["Kc"].verdict)
 
-    def test_boolean_nd_cannot_certify_a_bare_tagged_copy(self):
-        base = FIXTURES["A14"]
-        tagged_copy = PathSpec(
-            exists=True,
-            intermediate_states=tuple(("Y", x) for x in base.states),
-            outgoing=lambda x: ("Y", x),
-            returning=lambda y: base.transition(y[1]),
-            nd=True,
-        )
-        candidate = replace(base, path=tagged_copy)
-        self.assertEqual(Verdict.FAIL, detect(candidate).levels["Kp"].verdict)
+    def test_bare_tagged_copy_cannot_self_certify_nd(self):
+        result = detect(FIXTURES["A3"])
+        self.assertFalse(result.levels["Kp"].predicates["ND_preregistered_and_nontrivial"])
+        self.assertEqual(Verdict.FAIL, result.levels["Kp"].independent_verdict)
 
 
 if __name__ == "__main__":
