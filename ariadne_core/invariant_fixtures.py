@@ -151,26 +151,62 @@ def _base(
 
 
 FIXTURES = {
-    "A0": CandidateSystem(name="A0_pure_identity", states=STATES, projection=parity, transition=identity_tau, witness=0),
-    "A1": CandidateSystem(name="A1_visible_change", states=STATES, projection=parity, transition=visible_tau, witness=0),
-    "A2": _base("A2_hidden_displacement_only", path=PathSpec(exists=False), graded=None, ch=None),
+    "A0": CandidateSystem(
+        name="A0_pure_identity",
+        states=STATES,
+        projection=parity,
+        transition=identity_tau,
+        witness=0,
+    ),
+    "A1": CandidateSystem(
+        name="A1_visible_change",
+        states=STATES,
+        projection=parity,
+        transition=visible_tau,
+        witness=0,
+    ),
+    "A2": _base(
+        "A2_hidden_displacement_only",
+        path=PathSpec(exists=False),
+        graded=None,
+        ch=None,
+    ),
     "A3": _base(
         "A3_trivial_factorization",
-        path=PathSpec(exists=True, intermediate_states=STATES, outgoing=lambda x: x, returning=hidden_tau, nd=False),
+        path=PathSpec(
+            exists=True,
+            intermediate_states=STATES,
+            outgoing=lambda x: x,
+            returning=hidden_tau,
+            nd=False,
+        ),
         graded=None,
         ch=None,
     ),
     "A4": _base(
         "A4_genuine_path_wrong_closure",
-        graded=GradedSpec(rho=_rho_open, holonomy=_h_displaced, reciprocal_labels=True, path_inverse=False),
+        graded=GradedSpec(
+            rho=_rho_open,
+            holonomy=_h_displaced,
+            reciprocal_labels=True,
+            path_inverse=False,
+        ),
         ch=None,
     ),
     "A5": _base(
         "A5_local_closure_no_global_displacement",
-        graded=GradedSpec(rho=_rho_closed, holonomy=_h_closed, reciprocal_labels=True, path_inverse=False),
+        graded=GradedSpec(
+            rho=_rho_closed,
+            holonomy=_h_closed,
+            reciprocal_labels=True,
+            path_inverse=False,
+        ),
         ch=None,
     ),
-    "A6": _base("A6_genuine_graded_no_ch", ch=CHSpec(exists=False)),
+    "A6": _base(
+        "A6_genuine_graded_no_ch",
+        ch=CHSpec(exists=False),
+    ),
     "A7": _base(
         "A7_fake_ch_coarse_realization",
         ch=CHSpec(
@@ -195,9 +231,18 @@ FIXTURES = {
         },
     ),
     "A9": _base("A9_genuine_ch_single_domain"),
-    "A10": _base("A10_numerical_lookalike_impostor", across=replace(VALID_ACROSS, projection_compatible=False)),
-    "A11": _base("A11_partial_across", across=replace(VALID_ACROSS, label_compatible=False)),
-    "A12": _base("A12_overfit_adapter", across=replace(VALID_ACROSS, adapter_preregistered=False)),
+    "A10": _base(
+        "A10_numerical_lookalike_impostor",
+        across=replace(VALID_ACROSS, projection_compatible=False),
+    ),
+    "A11": _base(
+        "A11_partial_across",
+        across=replace(VALID_ACROSS, label_compatible=False),
+    ),
+    "A12": _base(
+        "A12_overfit_adapter",
+        across=replace(VALID_ACROSS, adapter_preregistered=False),
+    ),
     "A13": _base(
         "A13_search_path_p_hack",
         across=VALID_ACROSS,
@@ -209,7 +254,10 @@ FIXTURES = {
             )
         },
     ),
-    "A14": _base("A14_genuine_synthetic_across", across=VALID_ACROSS),
+    "A14": _base(
+        "A14_genuine_synthetic_across",
+        across=VALID_ACROSS,
+    ),
 }
 
 
@@ -253,14 +301,20 @@ MUTATIONS = {
     ),
     "A5": _base("M_A5_restore_global_displacement", ch=None),
     "A6": _base("M_A6_add_valid_ch"),
-    "A7": _base("M_A7_make_null_collision_small", ch=replace(FIXTURES["A7"].ch, null_collision_rate=0.01)),
+    "A7": _base(
+        "M_A7_make_null_collision_small",
+        ch=replace(FIXTURES["A7"].ch, null_collision_rate=0.01),
+    ),
     "A8": _base("M_A8_remove_target_leakage"),
     "A9": _base("M_A9_add_valid_across", across=VALID_ACROSS),
     "A10": _base("M_A10_fix_projection_transport", across=VALID_ACROSS),
     "A11": _base("M_A11_fix_label_transport", across=VALID_ACROSS),
     "A12": _base("M_A12_preregister_adapter", across=VALID_ACROSS),
     "A13": _base("M_A13_log_full_search", across=VALID_ACROSS),
-    "A14": _base("M_A14_break_holonomy_transport", across=replace(VALID_ACROSS, holonomy_compatible=False)),
+    "A14": _base(
+        "M_A14_break_holonomy_transport",
+        across=replace(VALID_ACROSS, holonomy_compatible=False),
+    ),
 }
 
 
@@ -287,7 +341,13 @@ MUTATION_INTEGRITY_EXPECTED = {key: PASS for key in MUTATIONS}
 
 def r_to_s1_calibration() -> CandidateSystem:
     """Finite sample-scoped calibration of the standard R -> S1 cover."""
-    states = (Fraction(0, 1), Fraction(1, 4), Fraction(1, 2), Fraction(3, 4))
+
+    states = (
+        Fraction(0, 1),
+        Fraction(1, 4),
+        Fraction(1, 2),
+        Fraction(3, 4),
+    )
 
     def projection(x):
         angle = 2.0 * math.pi * float(x)
@@ -301,6 +361,8 @@ def r_to_s1_calibration() -> CandidateSystem:
         witness=Fraction(0, 1),
     )
 
+
+# --- Level-specific positive controls ---
 
 P_CORE = r_to_s1_calibration()
 P_PATH = _base("P_path", graded=None, ch=None, across=None)
@@ -375,7 +437,14 @@ TARGET = CandidateSystem(
     ),
 )
 
-PATH_MAP = {"id": "tid", "gamma": "tgamma", "A": "TA", "B": "TB", "C": "TC", "D": "TD"}
+PATH_MAP = {
+    "id": "tid",
+    "gamma": "tgamma",
+    "A": "TA",
+    "B": "TB",
+    "C": "TC",
+    "D": "TD",
+}
 
 VALID_COMPUTED_ADAPTER = AcrossAdapter(
     target=TARGET,
@@ -397,7 +466,14 @@ P_ACROSS = _base(
     ),
 )
 
-POSITIVE_CONTROLS = {"Pc": P_CORE, "Pp": P_PATH, "Pg": P_GRADED, "Pch": P_CH, "Pa": P_ACROSS}
+POSITIVE_CONTROLS = {
+    "Pc": P_CORE,
+    "Pp": P_PATH,
+    "Pg": P_GRADED,
+    "Pch": P_CH,
+    "Pa": P_ACROSS,
+}
+
 POSITIVE_EXPECTED = {
     "Pc": (PASS, UNDETERMINED, UNDETERMINED, UNDETERMINED, UNDETERMINED),
     "Pp": (PASS, PASS, UNDETERMINED, UNDETERMINED, UNDETERMINED),
@@ -407,6 +483,7 @@ POSITIVE_EXPECTED = {
 }
 
 
+# Predicate-isolating mutations from otherwise valid candidates.
 def partly_visible_projection(x):
     return {0: 0, 2: 0, 1: 1, 3: 2}[x]
 
